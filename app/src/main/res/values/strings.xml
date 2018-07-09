@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Kinect Logger</string>
+    <string name="patient_manager_activity_title">Administración</string>
+    <string name="patient_name_label">Nombre del paciente</string>
+    <string name="patient_lastname_label">Apellido paterno</string>
+    <string name="patient_lastname2_label">Apellido materno</string>
+    <string name="birthday_label">Fecha de nacimiento</string>
+    <string name="patient_name_hint">Lerand</string>
+    <string name="patient_lastname_hint">Alveron</string>
+    <string name="patient_lastname2_hint">Threpe</string>
 </resources>
+
+
