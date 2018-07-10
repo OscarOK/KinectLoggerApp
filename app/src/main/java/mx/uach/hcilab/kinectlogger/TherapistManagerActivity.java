@@ -2,50 +2,47 @@ package mx.uach.hcilab.kinectlogger;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.provider.MediaStore;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.graphics.Bitmap;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import mx.uach.hcilab.kinectlogger.util.BitmapHelper;
+import mx.uach.hcilab.kinectlogger.util.CameraIntentHelper;
+import mx.uach.hcilab.kinectlogger.util.CameraIntentHelperCallback;
+import mx.uach.hcilab.kinectlogger.util.PermissionsHelper;
 
-import java.security.Permission;
-import java.util.Date;
-
-import mx.uach.hcilab.kinectlogger.util.*;
-
-public class PatientManagerActivity extends AppCompatActivity {
-
+public class TherapistManagerActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     CameraIntentHelper mCameraIntentHelper;
     PermissionsHelper mPermissionHelper;
 
-    private static final String TAG = "PatientManagerActivity";
+    private static final String TAG = "TherapistManagerActivity";
+
 
     @BindView(R.id.button_take_photo)
     FloatingActionButton mTakePhotoButton;
-    @BindView(R.id.image_view_patient)
+    @BindView(R.id.image_view_therapist)
     ImageView mPatientImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patients_manager);
+        setContentView(R.layout.activity_therapists_manager);
         ButterKnife.bind(this);
-        setTitle(getString(R.string.patient_manager_activity_title));
+        setTitle(getString(R.string.therapist_activity_title));
+
         mPermissionHelper = new PermissionsHelper(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
 
         mPermissionHelper.request(new PermissionsHelper.PermissionCallback() {
@@ -84,27 +81,16 @@ public class PatientManagerActivity extends AppCompatActivity {
     @OnClick(R.id.button_take_photo)
     protected void takePhoto(){
 
-
         if(mCameraIntentHelper !=null)
             mCameraIntentHelper.startCameraIntent();
     }
-
-
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
     private void setupCameraIntentHelper() {
         mCameraIntentHelper = new CameraIntentHelper(this, new CameraIntentHelperCallback() {
             @Override
             public void onPhotoUriFound(Date dateCameraIntentStarted, Uri photoUri, int rotateXDegrees) {
                 Toast.makeText(getApplicationContext(), getString(R.string.activity_camera_intent_photo_uri_found) + photoUri.toString(),Toast.LENGTH_LONG).show();
 
-                Bitmap photo = BitmapHelper.readBitmap(PatientManagerActivity.this, photoUri);
+                Bitmap photo = BitmapHelper.readBitmap(TherapistManagerActivity.this, photoUri);
                 if (photo != null) {
                     photo = BitmapHelper.shrinkBitmap(photo, 300, rotateXDegrees);
 
@@ -114,7 +100,7 @@ public class PatientManagerActivity extends AppCompatActivity {
 
             @Override
             public void deletePhotoWithUri(Uri photoUri) {
-                BitmapHelper.deleteImageWithUriIfExists(photoUri, PatientManagerActivity.this);
+                BitmapHelper.deleteImageWithUriIfExists(photoUri, TherapistManagerActivity.this);
             }
 
             @Override

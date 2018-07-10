@@ -4,41 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PatientManagerActivity">
-
+    tools:context=".TherapistManagerActivity">
     <TextView
-        android:id="@+id/textview_patient_name"
+        android:id="@+id/textview_therapist_name"
         style="@style/TextViews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
-        android:text="@string/patient_name_label"
+        android:text="@string/therapist_name_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/text_layout_patient_name"
+        android:id="@+id/text_layout_therapist_name"
         android:layout_width="514dp"
         android:layout_height="58dp"
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textview_patient_name">
+        app:layout_constraintTop_toTopOf="@id/textview_therapist_name"
+        >
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/text_patient_name"
+            android:id="@+id/text_therapist_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/patient_name_hint"
+            android:hint="@string/therapist_name_hint"
             android:imeOptions="actionNext"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
-        android:id="@+id/textview_patient_lastname"
+        android:id="@+id/textview_therapist_lastname"
         style="@style/TextViews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,28 +48,29 @@
         android:layout_marginTop="70dp"
         android:text="@string/patient_lastname_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_layout_patient_name" />
+        app:layout_constraintTop_toTopOf="@id/text_layout_therapist_name" />
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/text_layout_patient_lastname"
+        android:id="@+id/text_layout_therapist_lastname"
         android:layout_width="514dp"
         android:layout_height="58dp"
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textview_patient_lastname">
+        app:layout_constraintTop_toTopOf="@id/textview_therapist_lastname">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/text_patient_lastname"
+            android:id="@+id/text_therapist_lastname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/patient_lastname_hint"
+            android:hint="@string/therapist_lastname_hint"
             android:imeOptions="actionNext"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
-        android:id="@+id/textview_patient_lastname_2"
+        android:id="@+id/textview_therapist_lastname_2"
         style="@style/TextViews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,7 +79,7 @@
         android:layout_marginTop="70dp"
         android:text="@string/patient_lastname2_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_layout_patient_lastname" />
+        app:layout_constraintTop_toTopOf="@id/text_layout_therapist_lastname" />
     <android.support.design.widget.TextInputLayout
         android:layout_width="514dp"
         android:layout_height="58dp"
@@ -85,26 +87,27 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textview_patient_lastname_2">
+        app:layout_constraintTop_toTopOf="@id/textview_therapist_lastname_2">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/text_patient_lastname_2"
+            android:id="@+id/text_therapist_lastname_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/patient_lastname2_hint"
+            android:hint="@string/therapist_lastname2_hint"
             android:imeOptions="actionNext"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            />
     </android.support.design.widget.TextInputLayout>
 
     <ImageView
-        android:id="@+id/image_view_patient"
+        android:id="@+id/image_view_therapist"
         android:layout_width="300dp"
         android:layout_height="329dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/profile_box"
-        android:src="@drawable/profileimageboy"
+        android:src="@drawable/therapist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -120,7 +123,6 @@
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/button_save"
         android:layout_width="200dp"

@@ -1,13 +1,30 @@
 <resources>
     <string name="app_name">Kinect Logger</string>
-    <string name="patient_manager_activity_title">Administración</string>
+    <string name="therapist_activity_title">Agregar un nuevo perfil</string>
+    <string name="patient_activity_title">Agregar un nuevo paciente</string>
+    <string name="save_button">Guardar</string>
+
+    <string name="patient_manager_activity_title">Agregar un paciente nuevo</string>
     <string name="patient_name_label">Nombre del paciente</string>
     <string name="patient_lastname_label">Apellido paterno</string>
     <string name="patient_lastname2_label">Apellido materno</string>
     <string name="birthday_label">Fecha de nacimiento</string>
-    <string name="patient_name_hint">Lerand</string>
-    <string name="patient_lastname_hint">Alveron</string>
-    <string name="patient_lastname2_hint">Threpe</string>
+
+    <string name="therapist_name_label">Nombre de la terapeuta</string>
+    <string name="therapist_lastname_hint">Ej. Cthaeh</string>
+    <string name="therapist_lastname2_hint">Ej. Teren</string>
+    <string name="therapist_name_hint">Ej. Lorren</string>
+
+    <string name="patient_name_hint">Ej. Lerand</string>
+    <string name="patient_lastname_hint">Ej. Alveron</string>
+    <string name="patient_lastname2_hint">Ej. Threpe</string>
+
+    <string name="activity_camera_intent_photo_uri_found">Se encontró el URI de la foto</string>
+    <string name="activity_camera_intent_photo_uri_not_found">No se encontró el URI de la foto</string>
+    <string name="warning_camera_intent_canceled">La grabación fue cancelada por el usuario.</string>
+    <string name="error_could_not_take_photo">Hay un problema con la cámara ¡Lo sentimos mucho por este inconveniente!</string>
+    <string name="error_sth_went_wrong">Algo salió mal. Por favor intente de nuevo</string>
+    <string name="error_sd_card_not_mounted">Se requiere memoria externa. Presumiblemente, su tarjeta SD no está disponible actualmente.</string>
 </resources>
 
 
