@@ -1,1 +1,3 @@
 # KinectLoggerApp
+
+Android project 
