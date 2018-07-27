@@ -18,16 +18,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TherapistActivity" >
+        <activity android:name=".TherapistActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PatientManagerActivity" android:screenOrientation="landscape">
-        </activity>
-        <activity android:name=".TherapistManagerActivity" android:screenOrientation="landscape">
-        </activity>
+        <activity
+            android:name=".PatientManagerActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".TherapistManagerActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity android:name=".ReflexRidgeActivity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

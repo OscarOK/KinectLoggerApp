@@ -25,6 +25,10 @@
     <string name="error_could_not_take_photo">Hay un problema con la cámara ¡Lo sentimos mucho por este inconveniente!</string>
     <string name="error_sth_went_wrong">Algo salió mal. Por favor intente de nuevo</string>
     <string name="error_sd_card_not_mounted">Se requiere memoria externa. Presumiblemente, su tarjeta SD no está disponible actualmente.</string>
+
+    <string name="button_action_good">Bien</string>
+    <string name="button_action_bad">Mal</string>
+    <string name="button_action_inhibition">Inhibición</string>
 </resources>
 
 

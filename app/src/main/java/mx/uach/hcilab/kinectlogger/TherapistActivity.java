@@ -1,5 +1,6 @@
 package mx.uach.hcilab.kinectlogger;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,6 +10,6 @@ public class TherapistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_therapists);
-
+        startActivity(new Intent(this, ReflexRidgeActivity.class));
     }
 }
