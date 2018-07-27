@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import butterknife.OnClick;
 import mx.uach.hcilab.kinectlogger.util.BitmapHelper;
 import mx.uach.hcilab.kinectlogger.util.CameraIntentHelper;
 import mx.uach.hcilab.kinectlogger.util.CameraIntentHelperCallback;
+import mx.uach.hcilab.kinectlogger.util.FirestoreHelper;
 import mx.uach.hcilab.kinectlogger.util.PermissionsHelper;
 
 public class TherapistManagerActivity extends AppCompatActivity {
@@ -28,13 +31,19 @@ public class TherapistManagerActivity extends AppCompatActivity {
     CameraIntentHelper mCameraIntentHelper;
     PermissionsHelper mPermissionHelper;
 
-    private static final String TAG = "TherapistManagerActivity";
+    Uri photoPath = null;
+
+    private static final String TAG = "TherapistManagerActiv";
 
 
     @BindView(R.id.button_take_photo)
     FloatingActionButton mTakePhotoButton;
     @BindView(R.id.image_view_therapist)
     ImageView mPatientImageView;
+
+    @BindView(R.id.text_therapist_name) EditText nameEditText;
+    @BindView(R.id.text_therapist_lastname) EditText paternalEditText;
+    @BindView(R.id.text_therapist_lastname_2) EditText maternalEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +76,7 @@ public class TherapistManagerActivity extends AppCompatActivity {
                 mPermissionHelper.openAppDetailsActivity();
             }
         });
+
         setupCameraIntentHelper();
     }
     @Override
@@ -77,6 +87,27 @@ public class TherapistManagerActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Añadido por Héctor para probar la subida de terapeutas a la base de datos,
+     * modificar si es necesario:)
+     */
+    @OnClick(R.id.button_save)
+    protected void clickedSaveButton(){
+        if(nameEditText.getText().toString().isEmpty() ||
+                paternalEditText.getText().toString().isEmpty() ||
+                maternalEditText.getText().toString().isEmpty() ||
+                photoPath == null){
+            Toast.makeText(getApplicationContext(), R.string.warning_fields_incomplete, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Therapist therapist = new Therapist(nameEditText.getText().toString(),
+                paternalEditText.getText().toString(),
+                maternalEditText.getText().toString(),
+                photoPath);
+        FirestoreHelper.addTherapist(therapist);
+    }
 
     @OnClick(R.id.button_take_photo)
     protected void takePhoto(){
@@ -90,6 +121,7 @@ public class TherapistManagerActivity extends AppCompatActivity {
             public void onPhotoUriFound(Date dateCameraIntentStarted, Uri photoUri, int rotateXDegrees) {
                 Toast.makeText(getApplicationContext(), getString(R.string.activity_camera_intent_photo_uri_found) + photoUri.toString(),Toast.LENGTH_LONG).show();
 
+                photoPath = photoUri;
                 Bitmap photo = BitmapHelper.readBitmap(TherapistManagerActivity.this, photoUri);
                 if (photo != null) {
                     photo = BitmapHelper.shrinkBitmap(photo, 300, rotateXDegrees);
