@@ -29,6 +29,8 @@
     <string name="button_action_good">Bien</string>
     <string name="button_action_bad">Mal</string>
     <string name="button_action_inhibition">Inhibición</string>
+
+    <string name="action_finish_reflex_ridge">Terminar Registro</string>
 </resources>
 
 

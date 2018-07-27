@@ -6,6 +6,9 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -24,6 +27,13 @@ public class ReflexRidgeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reflex_ridge);
+
+        // Menu
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // TODO: OPEN level_selector_fragment
+        // TODO: OPEN general_time_fragment
+        // TODO: OPEN confirmation_fragment
 
         // Init actions buttons
         imageButtons[0] = findViewById(R.id.button_jump);
@@ -83,6 +93,26 @@ public class ReflexRidgeActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.reflex_ridge_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+        } else if (id == R.id.action_finish_reflex_ridge) {
+            // TODO: OPEN POINTS FRAGMENT
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void coloringButtons(@ColorRes int id) {
