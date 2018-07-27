@@ -30,6 +30,8 @@
     <string name="button_action_bad">Mal</string>
     <string name="button_action_inhibition">Inhibición</string>
     <string name="warning_fields_incomplete">Por favor, llena todos los campos.</string>
+
+    <string name="action_finish_reflex_ridge">Terminar Registro</string>
 </resources>
 
 
