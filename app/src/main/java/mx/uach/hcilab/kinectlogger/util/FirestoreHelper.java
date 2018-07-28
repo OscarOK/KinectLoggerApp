@@ -9,14 +9,17 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.Therapist;
 
 public class FirestoreHelper {
     private static final String TAG = "Firestore Helper";
 
     private static final String THERAPIST_COLLECTION = "therapists";
+    private static final String PATIENT_COLLECTION = "patients";
 
-    public static void addTherapist(Therapist therapist){
+
+    public static void uploadTherapist(Therapist therapist){
         String uniqueKey = generateUniqueKey(therapist);
 
         FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
@@ -38,10 +41,32 @@ public class FirestoreHelper {
         StorageHelper.uploadImage(therapist.getPicturePath(), uniqueKey, null);
     }
 
-    public static String generateUniqueKey(Therapist therapist){
-        String paternal = therapist.getPaternal();
-        String maternal = therapist.getMaternal();
-        String name = therapist.getName();
+    public static void uploadPatient(Patient patient){
+        String uniqueKey = generateUniqueKey(patient);
+
+        FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+        CollectionReference collection = firestoreDB.collection(PATIENT_COLLECTION);
+        collection.document(uniqueKey).set(patient.toMap())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Paciente añadido correctamente");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.getMessage());
+                    }
+                });
+
+        StorageHelper.uploadImage(patient.getPicturePath(), uniqueKey, null);
+    }
+
+    public static String generateUniqueKey(User user){
+        String paternal = user.getPaternal();
+        String maternal = user.getMaternal();
+        String name = user.getName();
 
         return (paternal.substring(0, Math.min(paternal.length(), 4)) +
                 maternal.substring(0, Math.min(maternal.length(), 4)) +

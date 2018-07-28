@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -106,7 +105,7 @@ public class TherapistManagerActivity extends AppCompatActivity {
                 paternalEditText.getText().toString(),
                 maternalEditText.getText().toString(),
                 photoPath);
-        FirestoreHelper.addTherapist(therapist);
+        FirestoreHelper.uploadTherapist(therapist);
     }
 
     @OnClick(R.id.button_take_photo)
