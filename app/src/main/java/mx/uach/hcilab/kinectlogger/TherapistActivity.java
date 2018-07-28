@@ -1,20 +1,27 @@
 package mx.uach.hcilab.kinectlogger;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +34,7 @@ import butterknife.BindView;
 import mx.uach.hcilab.kinectlogger.adapter.FireStoreAdapter;
 import mx.uach.hcilab.kinectlogger.util.BitmapHelper;
 import mx.uach.hcilab.kinectlogger.util.FirestoreHelper;
+import mx.uach.hcilab.kinectlogger.util.RecyclerTouchListener;
 import mx.uach.hcilab.kinectlogger.util.StorageHelper;
 import mx.uach.hcilab.kinectlogger.util.User;
 
@@ -45,13 +53,52 @@ public class TherapistActivity extends AppCompatActivity {
         //startActivity(new Intent(this, ReflexRidgeActivity.class));
         RecyclerView.LayoutManager layoutManager =
                 new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        if(mRecyclerView == null){
-            Log.d(TAG, "recycler view is null");
-        }
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         fireStoreAdapter.startListening();
         mRecyclerView.setAdapter(fireStoreAdapter);
+
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mRecyclerView);
+        mRecyclerView.scrollToPosition(0);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(),
+                mRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), "Clicked on " + position, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                
+            }
+        }));
+    }
+
+    class CustomLayoutManager extends LinearLayoutManager {
+        private int mParentWidth;
+        private int mItemWidth;
+
+        public CustomLayoutManager(Context context, int parentWidth, int itemWidth) {
+            super(context);
+            mParentWidth = parentWidth;
+            mItemWidth = itemWidth;
+        }
+
+        public CustomLayoutManager(Context context, int orientation, boolean reverseLayout) {
+            super(context, orientation, reverseLayout);
+        }
+
+        @Override
+        public int getPaddingLeft() {
+            return Math.round(mParentWidth / 2f - mItemWidth / 2f);
+        }
+
+        @Override
+        public int getPaddingRight() {
+            return getPaddingLeft();
+        }
     }
 
     @Override
