@@ -32,6 +32,10 @@
     <string name="warning_fields_incomplete">Por favor, llena todos los campos.</string>
 
     <string name="action_finish_reflex_ridge">Terminar Registro</string>
+
+    <string name="level_selector_title">Selecciona un nivel</string>
+    <string name="general_time_title">Ingresa el tiempo general</string>
+    <string name="points_title">Ingresa el puntaje obtenido</string>
 </resources>
 
 

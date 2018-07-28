@@ -1,7 +1,12 @@
 package mx.uach.hcilab.kinectlogger;
 
+import android.annotation.SuppressLint;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +18,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class ReflexRidgeActivity extends AppCompatActivity {
+
+    private static final long RESPONSE_DELAY = 1000;
 
     private boolean inhibitionFlag = false;
     private boolean badFlag        = false;
@@ -46,12 +56,24 @@ public class ReflexRidgeActivity extends AppCompatActivity {
         buttonBad = findViewById(R.id.button_bad);
         buttonInhibition = findViewById(R.id.button_inhibition);
 
+        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                flagsDown();
+                Log.e("DELAY ", "APPLIED");
+            }
+        };
+
         buttonBad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                handler.removeCallbacksAndMessages(null);
+
                 if (inhibitionFlag) {
                     inhibitionFlag = false;
                 }
+
+                handler.sendEmptyMessageDelayed(0, RESPONSE_DELAY);
 
                 badFlag = true;
                 coloringButtons(R.color.colorBadRed);
@@ -61,9 +83,13 @@ public class ReflexRidgeActivity extends AppCompatActivity {
         buttonInhibition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                handler.removeCallbacksAndMessages(null);
+
                 if (badFlag) {
                     badFlag = false;
                 }
+
+                handler.sendEmptyMessageDelayed(1, RESPONSE_DELAY);
 
                 inhibitionFlag = true;
                 coloringButtons(R.color.colorInhibitionYellow);
@@ -75,20 +101,19 @@ public class ReflexRidgeActivity extends AppCompatActivity {
             imageButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    handler.removeCallbacksAndMessages(null);
                     Log.i("ImageButton Action", String.valueOf(finalI));
 
                     if (badFlag) {
-                        Log.i("ImageButton Status: ", "BAD");
+                        Log.i("ImageButton Status", "BAD");
                     } else if (inhibitionFlag) {
-                        Log.i("ImageButton Status: ", "INHIBITION");
+                        Log.i("ImageButton Status", "INHIBITION");
                     } else {
-                        Log.i("ImageButton Status: ", "GOOD");
+                        Log.i("ImageButton Status", "GOOD");
                     }
 
                     if (!badFlag || !inhibitionFlag) {
-                        badFlag = false;
-                        inhibitionFlag = false;
-                        coloringButtons(R.color.colorGoodGreen);
+                        flagsDown();
                     }
                 }
             });
@@ -113,6 +138,12 @@ public class ReflexRidgeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void flagsDown() {
+        badFlag = false;
+        inhibitionFlag = false;
+        coloringButtons(R.color.colorGoodGreen);
     }
 
     private void coloringButtons(@ColorRes int id) {
