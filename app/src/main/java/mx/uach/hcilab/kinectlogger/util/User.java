@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class User {
 
-    private static final String NAME = "name";
-    private static final String PATERNAL = "paternal";
-    private static final String MATERNAL = "maternal";
+    public static final String NAME = "name";
+    public static final String PATERNAL = "paternal";
+    public static final String MATERNAL = "maternal";
 
     private String name, paternal, maternal;
     private Uri picturePath;

@@ -23,6 +23,8 @@ public class ReflexRidgeActivity extends AppCompatActivity {
 
     private ImageButton imageButtons[] = new ImageButton[5];
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

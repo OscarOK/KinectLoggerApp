@@ -15,8 +15,8 @@ import mx.uach.hcilab.kinectlogger.Therapist;
 public class FirestoreHelper {
     private static final String TAG = "Firestore Helper";
 
-    private static final String THERAPIST_COLLECTION = "therapists";
-    private static final String PATIENT_COLLECTION = "patients";
+    public static final String THERAPIST_COLLECTION = "therapists";
+    public static final String PATIENT_COLLECTION = "patients";
 
 
     public static void uploadTherapist(Therapist therapist){

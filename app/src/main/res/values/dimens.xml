@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="selector_photo_minSize">214dp</dimen>
+    <dimen name="selector_chipTextSize">20sp</dimen>
+
+    <dimen name="small_margin">16dp</dimen>
+    <dimen name="medium_margin">32dp</dimen>
+    <dimen name="large_margin">64dp</dimen>
+</resources>
