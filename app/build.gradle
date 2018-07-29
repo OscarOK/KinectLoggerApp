@@ -44,6 +44,9 @@ dependencies {
 
     // MaterialNumberPicker
     implementation "com.github.StephenVinouze:MaterialNumberPicker:1.0.6"
+
+    // NumPad
+    implementation 'com.fxn769:numpad:1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

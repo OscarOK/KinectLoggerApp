@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:numpad="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/time_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        numpad:layout_constraintBottom_toTopOf="@+id/num"
+        numpad:layout_constraintEnd_toStartOf="@+id/text_view_unit"
+        numpad:layout_constraintHorizontal_bias="0.5"
+        numpad:layout_constraintHorizontal_chainStyle="packed"
+        numpad:layout_constraintStart_toStartOf="parent"
+        numpad:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_view_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:text="s"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        numpad:layout_constraintBottom_toBottomOf="@+id/time_input"
+        numpad:layout_constraintEnd_toEndOf="parent"
+        numpad:layout_constraintHorizontal_bias="0.5"
+        numpad:layout_constraintStart_toEndOf="@+id/time_input" />
+
+    <com.fxn769.Numpad
+        android:id="@+id/num"
+        android:layout_width="240dp"
+        android:layout_height="320dp"
+        numpad:layout_constraintBottom_toBottomOf="parent"
+        numpad:layout_constraintEnd_toEndOf="parent"
+        numpad:layout_constraintStart_toStartOf="parent"
+        numpad:numpad_background_resource="@drawable/numpad_background"
+        numpad:numpad_image_resource="@drawable/ic_backspace"
+        numpad:numpad_text_color="@android:color/black"
+        numpad:numpad_text_limit="10"
+        numpad:numpad_text_size="18dp" />
+
+</android.support.constraint.ConstraintLayout>

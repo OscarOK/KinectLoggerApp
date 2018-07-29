@@ -20,20 +20,23 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
+import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
 
-public class ReflexRidgeActivity extends AppCompatActivity implements LevelSelector.OnInputListener {
+public class ReflexRidgeActivity extends AppCompatActivity implements
+        LevelSelector.OnInputListener, GeneralTimeSelector.OnInputListener,
+        PointsSelector.OnInputListener {
 
     private static final long RESPONSE_DELAY = 1000;
 
     private boolean inhibitionFlag = false;
-    private boolean badFlag        = false;
+    private boolean badFlag = false;
 
     private Button buttonBad;
     private Button buttonInhibition;
 
     private ImageButton imageButtons[] = new ImageButton[5];
-
 
 
     @Override
@@ -48,11 +51,9 @@ public class ReflexRidgeActivity extends AppCompatActivity implements LevelSelec
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        DialogFragment levelSelector = new LevelSelector();
+        DialogFragment levelSelector = new GeneralTimeSelector();
         fragmentTransaction.add(levelSelector, "level_selector");
         fragmentTransaction.commit();
-
-
 
 
         // TODO: OPEN general_time_fragment
@@ -173,6 +174,21 @@ public class ReflexRidgeActivity extends AppCompatActivity implements LevelSelec
     @Override
     public void sendSelectedNumber(int number) {
         Toast.makeText(this, String.valueOf(number), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendSelectedTime(int time) {
+        Toast.makeText(this, String.valueOf(time), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendSelectedPoints(int points) {
+        Toast.makeText(this, String.valueOf(points), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void goBack() {
+
     }
 
     @Override
