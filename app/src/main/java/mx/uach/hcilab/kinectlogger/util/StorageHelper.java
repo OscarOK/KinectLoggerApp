@@ -44,7 +44,7 @@ public class StorageHelper {
 
         try {
             StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
-            StorageReference myRef = mStorageRef.child(key);
+            StorageReference myRef = mStorageRef.child(key + ".jpg");
             final File localFile = File.createTempFile("images", "jpg");
             myRef.getFile(localFile)
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
