@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,6 +17,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +30,9 @@ import android.widget.Toast;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.transform.Pivot;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.io.File;
 import java.util.HashMap;
@@ -35,6 +42,7 @@ import mx.uach.hcilab.kinectlogger.adapter.FireStoreAdapter;
 import mx.uach.hcilab.kinectlogger.util.BitmapHelper;
 import mx.uach.hcilab.kinectlogger.util.FirestoreHelper;
 import mx.uach.hcilab.kinectlogger.util.RecyclerTouchListener;
+import mx.uach.hcilab.kinectlogger.util.SelectorItemTransformer;
 import mx.uach.hcilab.kinectlogger.util.StorageHelper;
 import mx.uach.hcilab.kinectlogger.util.User;
 
@@ -42,63 +50,52 @@ public class TherapistActivity extends AppCompatActivity {
 
     private static final String TAG = "Therapist Activity";
 
-    RecyclerView mRecyclerView;
+    DiscreteScrollView mRecyclerView;
+    FloatingActionButton mConfirmFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_therapists);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.therapistRecyclerView);
-        //startActivity(new Intent(this, ReflexRidgeActivity.class));
-        RecyclerView.LayoutManager layoutManager =
-                new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView = (DiscreteScrollView) findViewById(R.id.therapistRecyclerView);
+        mConfirmFab = (FloatingActionButton) findViewById(R.id.therapistConfirmFab);
+
+        mConfirmFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmSelection();
+            }
+        });
+
         fireStoreAdapter.startListening();
         mRecyclerView.setAdapter(fireStoreAdapter);
 
-        SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(mRecyclerView);
-        mRecyclerView.scrollToPosition(0);
+        mRecyclerView.setItemTransformer(new SelectorItemTransformer.Builder()
+                .setMaxScale(1.1f)
+                .setMinScale(0.6f)
+                .build());
+        mRecyclerView.setSlideOnFling(true);
+        mRecyclerView.setSlideOnFlingThreshold(1050);
 
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(),
                 mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), "Clicked on " + position, Toast.LENGTH_SHORT).show();
+                mRecyclerView.smoothScrollToPosition(position);
             }
 
             @Override
             public void onLongClick(View view, int position) {
-                
+
             }
         }));
     }
 
-    class CustomLayoutManager extends LinearLayoutManager {
-        private int mParentWidth;
-        private int mItemWidth;
-
-        public CustomLayoutManager(Context context, int parentWidth, int itemWidth) {
-            super(context);
-            mParentWidth = parentWidth;
-            mItemWidth = itemWidth;
-        }
-
-        public CustomLayoutManager(Context context, int orientation, boolean reverseLayout) {
-            super(context, orientation, reverseLayout);
-        }
-
-        @Override
-        public int getPaddingLeft() {
-            return Math.round(mParentWidth / 2f - mItemWidth / 2f);
-        }
-
-        @Override
-        public int getPaddingRight() {
-            return getPaddingLeft();
-        }
+    @Override
+    protected void onResume() {
+        fireStoreAdapter.startListening();
+        super.onResume();
     }
 
     @Override
@@ -164,5 +161,36 @@ public class TherapistActivity extends AppCompatActivity {
             this.image = (ImageView) itemView.findViewById(R.id.userItemImageView);
             this.text = (TextView) itemView.findViewById(R.id.userItemTextView);
         }
+    }
+
+    public void confirmSelection(){
+        int position = mRecyclerView.getCurrentItem();
+        if(position == -1) { //No therapists exist
+            return;
+        }
+        DocumentSnapshot snapshot = fireStoreAdapter.getSnapshot(position);
+        String key = snapshot.getString(User.KEY);
+
+        Intent intent = new Intent(TherapistActivity.this, PatientActivity.class);
+        intent.putExtra(Therapist.THERAPIST_KEY, key);
+        startActivity(intent);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.therapist_selector_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.action_add_therapist){
+            Intent intent = new Intent(TherapistActivity.this, TherapistManagerActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

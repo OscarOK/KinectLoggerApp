@@ -23,7 +23,7 @@ public class StorageHelper {
 
     public static void uploadImage (Uri filePath, String key, final OnUploadImageListener listener) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(STORAGE_URL);
-        StorageReference childRef = storageRef.child(key);
+        StorageReference childRef = storageRef.child(key + ".jpg");
 
         //uploading the image
         UploadTask uploadTask = childRef.putFile(filePath);

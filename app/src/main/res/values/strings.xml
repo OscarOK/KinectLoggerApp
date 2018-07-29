@@ -36,6 +36,7 @@
     <string name="level_selector_title">Selecciona un nivel</string>
     <string name="general_time_title">Ingresa el tiempo general</string>
     <string name="points_title">Ingresa el puntaje obtenido</string>
+    <string name="add_therapist">Añadir terapeuta</string>
 </resources>
 
 
