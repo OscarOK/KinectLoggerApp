@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".RiverRushActivity">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:padding="16dp"
+            android:layout_height="match_parent">
+
+            <!-- JUMP -->
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonBadTint"
+                android:id="@+id/river_rush_jump_bad"
+                android:src="@drawable/ic_jump"
+                android:scaleType="fitCenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonInhibitionTint"
+                android:src="@drawable/ic_jump"
+                android:id="@+id/river_rush_jump_inhibition"
+                android:scaleType="fitCenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonGoodTint"
+                android:src="@drawable/ic_jump"
+                android:id="@+id/river_rush_jump_good"
+                android:scaleType="fitCenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- MIDDLE BARS -->
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonBadTint"
+                android:src="@drawable/ic_bar_middle"
+                android:id="@+id/river_rush_middle_bad"
+                android:scaleType="fitCenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonInhibitionTint"
+                android:src="@drawable/ic_bar_middle"
+                android:id="@+id/river_rush_middle_inhibition"
+                android:layout_width="wrap_content"
+                android:scaleType="fitCenter"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:src="@drawable/ic_bar_middle"
+                android:id="@+id/river_rush_middle_good"
+                android:scaleType="fitCenter"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonGoodTint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- CLOUD, BARS HITS -->
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonBadTint"
+                android:src="@drawable/ic_bar_left"
+                android:id="@+id/river_rush_left_bar"
+                android:layout_width="wrap_content"
+                android:scaleType="fitCenter"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:src="@drawable/ic_sad_cloud"
+                android:id="@+id/river_rush_cloud"
+                android:layout_width="wrap_content"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/WhiteTint"
+                android:scaleType="fitCenter"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/ButtonBadTint"
+                android:src="@drawable/ic_bar_right"
+                android:id="@+id/river_rush_right_bar"
+                android:layout_width="wrap_content"
+                android:scaleType="fitCenter"
+                android:layout_height="wrap_content" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

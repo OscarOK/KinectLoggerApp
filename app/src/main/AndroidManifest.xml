@@ -45,7 +45,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RallyBall"></activity>
+        <activity android:name=".RallyBall" />
+        <activity android:name=".RiverRushActivity"></activity>
     </application>
 
 </manifest>
