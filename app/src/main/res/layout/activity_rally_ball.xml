@@ -12,8 +12,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
+        android:elevation="16dp"
         android:focusable="true"
-        android:elevation="16dp"/>
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="0dp" >
+
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="271.5dp"
+        android:layout_height="99dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="20dp"
+        android:backgroundTint="@android:color/holo_orange_dark"
+        android:text="Inhibicion"
+        android:textSize="26sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="DuplicateIds" />
 
     <ImageButton
         android:id="@+id/bderecho"
@@ -109,7 +132,7 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="543dp"
+        android:layout_width="271.5dp"
         android:layout_height="99dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="20dp"
@@ -121,6 +144,7 @@
         android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView

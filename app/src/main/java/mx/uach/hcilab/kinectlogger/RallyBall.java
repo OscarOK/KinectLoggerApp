@@ -1,5 +1,6 @@
 package mx.uach.hcilab.kinectlogger;
 
+import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -13,22 +14,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class LeaksActivity extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener{
+import static mx.uach.hcilab.kinectlogger.R.id.button2;
+
+public class RallyBall extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener{
 
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
-    Button boton;
+    Button boton,boton2;
     int contador=0;
     ImageView vista;
     FrameLayout levelFragment;
     LevelSelectorFragment fragment;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaks);
 
-        getSupportActionBar().setTitle("20,000 leaks"); // for set actionbar title
+        getSupportActionBar().setTitle("Rally Ball"); // for set actionbar title
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -39,6 +43,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
         pderecha = (ImageButton) findViewById(R.id.pderecha);
         pizquierda = (ImageButton) findViewById(R.id.pizquierda);
         boton = (Button) findViewById(R.id.button);
+        boton2 = (Button) findViewById(R.id.button2);
         vista = (ImageView) findViewById(R.id.imageView);
         levelFragment = (FrameLayout) findViewById(R.id.fragmentContainer);
 
@@ -138,6 +143,13 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
                 }
             }
         });
+
+        boton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,3 +168,4 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
         transaction.commit();
     }
 }
+
