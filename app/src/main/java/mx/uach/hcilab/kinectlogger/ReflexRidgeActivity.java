@@ -1,13 +1,14 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.annotation.SuppressLint;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,11 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 
-public class ReflexRidgeActivity extends AppCompatActivity {
+public class ReflexRidgeActivity extends AppCompatActivity implements LevelSelector.OnInputListener {
 
     private static final long RESPONSE_DELAY = 1000;
 
@@ -42,6 +43,16 @@ public class ReflexRidgeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // TODO: OPEN level_selector_fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        DialogFragment levelSelector = new LevelSelector();
+        fragmentTransaction.add(levelSelector, "level_selector");
+        fragmentTransaction.commit();
+
+
+
+
         // TODO: OPEN general_time_fragment
         // TODO: OPEN confirmation_fragment
 
@@ -155,5 +166,15 @@ public class ReflexRidgeActivity extends AppCompatActivity {
                             ReflexRidgeActivity.this, id),
                     PorterDuff.Mode.MULTIPLY);
         }
+    }
+
+    @Override
+    public void sendSelectedNumber(int number) {
+        Toast.makeText(this, String.valueOf(number), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onChoose() {
+        finish();
     }
 }
