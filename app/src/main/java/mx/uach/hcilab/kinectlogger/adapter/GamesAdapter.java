@@ -29,7 +29,7 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolderGa
     public ViewHolderGames onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.game_item, null, false);
+                .inflate(R.layout.game_item, parent, false);
         return new ViewHolderGames(view);
     }
 
