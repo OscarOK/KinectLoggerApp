@@ -46,7 +46,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".RallyBall" />
-        <activity android:name=".RiverRushActivity"></activity>
+        <activity android:name=".RiverRushActivity" />
+        <activity android:name=".GameSelectorActivity"></activity>
     </application>
 
 </manifest>

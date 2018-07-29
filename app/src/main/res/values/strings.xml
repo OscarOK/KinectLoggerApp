@@ -41,6 +41,14 @@
     <string name="fragment_next_button">Siguiente</string>
     <string name="fragment_back_button">Atras</string>
     <string name="fragment_cancel_button">Cancelar</string>
+
+    <string name="button_play">Jugar</string>
+    <string name="text_view_title_dummy">Titulo</string>
+
+    <string name="river_rush_title">Río Abajo</string>
+    <string name="rally_ball_title">Carambola</string>
+    <string name="reflex_ridge_title">Cumbre de Reflejos</string>
+    <string name="leaks_title">Tapagrietas</string>
 </resources>
 
 

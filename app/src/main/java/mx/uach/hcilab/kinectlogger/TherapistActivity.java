@@ -50,7 +50,7 @@ public class TherapistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_therapists);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.therapistRecyclerView);
-        startActivity(new Intent(this, RiverRushActivity.class));
+        startActivity(new Intent(this, GameSelectorActivity.class));
         RecyclerView.LayoutManager layoutManager =
                 new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
