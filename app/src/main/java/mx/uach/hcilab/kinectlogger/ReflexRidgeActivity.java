@@ -137,7 +137,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.reflex_ridge_menu, menu);
+        menuInflater.inflate(R.menu.games_menu, menu);
         return true;
     }
 

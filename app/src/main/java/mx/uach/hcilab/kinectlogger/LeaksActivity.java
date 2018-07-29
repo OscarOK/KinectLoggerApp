@@ -1,7 +1,5 @@
 package mx.uach.hcilab.kinectlogger;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -142,7 +140,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.reflex_ridge_menu, menu);
+        menuInflater.inflate(R.menu.games_menu, menu);
         return true;
     }
 

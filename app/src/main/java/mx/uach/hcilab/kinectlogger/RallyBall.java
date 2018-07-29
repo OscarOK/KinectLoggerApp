@@ -1,8 +1,6 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.annotation.SuppressLint;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,8 +11,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
-import static mx.uach.hcilab.kinectlogger.R.id.button2;
 
 public class RallyBall extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener{
 
@@ -154,7 +150,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.reflex_ridge_menu, menu);
+        menuInflater.inflate(R.menu.games_menu, menu);
         return true;
     }
 
