@@ -1,13 +1,14 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.annotation.SuppressLint;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,22 +18,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
+import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
+import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
 
-public class ReflexRidgeActivity extends AppCompatActivity {
+public class ReflexRidgeActivity extends AppCompatActivity implements
+        LevelSelector.OnInputListener, GeneralTimeSelector.OnInputListener,
+        PointsSelector.OnInputListener {
 
     private static final long RESPONSE_DELAY = 1000;
 
     private boolean inhibitionFlag = false;
-    private boolean badFlag        = false;
+    private boolean badFlag = false;
 
     private Button buttonBad;
     private Button buttonInhibition;
 
     private ImageButton imageButtons[] = new ImageButton[5];
-
 
 
     @Override
@@ -44,6 +48,19 @@ public class ReflexRidgeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // TODO: OPEN level_selector_fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        DialogFragment levelSelector = new LevelSelector();
+        fragmentTransaction.replace(R.id.reflex_ridge_container, new GeneralTimeSelector())
+                .addToBackStack(null)
+                .commit();
+
+        /*fragmentTransaction.replace(R.id.reflex_ridge_container, levelSelector)
+                .addToBackStack(null)
+                .commit();*/
+
+
         // TODO: OPEN general_time_fragment
         // TODO: OPEN confirmation_fragment
 
@@ -125,7 +142,7 @@ public class ReflexRidgeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.reflex_ridge_menu, menu);
+        menuInflater.inflate(R.menu.games_menu, menu);
         return true;
     }
 
@@ -157,5 +174,30 @@ public class ReflexRidgeActivity extends AppCompatActivity {
                             ReflexRidgeActivity.this, id),
                     PorterDuff.Mode.MULTIPLY);
         }
+    }
+
+    @Override
+    public void sendSelectedNumber(int number) {
+        Toast.makeText(this, String.valueOf(number), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendSelectedTime(int time) {
+        Toast.makeText(this, String.valueOf(time), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendSelectedPoints(int points) {
+        Toast.makeText(this, String.valueOf(points), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void goBack() {
+
+    }
+
+    @Override
+    public void onChoose() {
+        finish();
     }
 }

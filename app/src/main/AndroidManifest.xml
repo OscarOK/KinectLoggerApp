@@ -46,6 +46,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".PatientActivity"></activity>
+        <activity android:name=".RallyBall" />
+        <activity android:name=".RiverRushActivity" />
+        <activity android:name=".GameSelectorActivity"></activity>
     </application>
 
 </manifest>

@@ -22,4 +22,13 @@
     <style name="ButtonGoodTint" parent="ThemeOverlay.AppCompat">
         <item name="colorAccent">@color/colorGoodGreen</item>
     </style>
+
+    <style name="WhiteTint" parent="ThemeOverlay.AppCompat">
+        <item name="colorAccent">@android:color/white</item>
+    </style>
+
+    <style name="CloudTimeTheme" parent="ThemeOverlay.AppCompat">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>

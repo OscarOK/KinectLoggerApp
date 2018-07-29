@@ -30,6 +30,7 @@ dependencies {
     // ButterKnife (for sample code brevity)
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
+    implementation 'com.android.support:support-v4:26.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -45,6 +46,9 @@ dependencies {
 
     // MaterialNumberPicker
     implementation "com.github.StephenVinouze:MaterialNumberPicker:1.0.6"
+
+    // NumPad
+    implementation 'com.fxn769:numpad:1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

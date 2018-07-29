@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".RiverRushActivity">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <!-- JUMP -->
+
+            <ImageButton
+                android:id="@+id/river_rush_jump_bad"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_jump"
+                android:theme="@style/ButtonBadTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintHorizontal_bias="0.56"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageButton
+                android:id="@+id/river_rush_jump_inhibition"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_jump"
+                android:theme="@style/ButtonInhibitionTint"
+                app:layout_constraintBottom_toTopOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintEnd_toEndOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintStart_toStartOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/river_rush_jump_good"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_jump"
+                android:theme="@style/ButtonGoodTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_jump_inhibition" />
+
+            <!-- MIDDLE BARS -->
+
+            <ImageButton
+                android:id="@+id/river_rush_middle_bad"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_middle"
+                android:theme="@style/ButtonBadTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_jump_bad"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_middle_inhibition" />
+
+            <ImageButton
+                android:id="@+id/river_rush_middle_inhibition"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_middle"
+                android:tag="s"
+                android:theme="@style/ButtonInhibitionTint"
+                app:layout_constraintBottom_toTopOf="@+id/river_rush_cloud"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_middle_good"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_middle_bad"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_jump_inhibition" />
+
+            <ImageButton
+                android:id="@+id/river_rush_middle_good"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_middle"
+                android:theme="@style/ButtonGoodTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_middle_inhibition" />
+
+            <!-- CLOUD, BARS HITS -->
+
+            <ImageButton
+                android:id="@+id/river_rush_left_bar"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_left"
+                android:theme="@style/ButtonBadTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_cloud"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_cloud"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <ImageButton
+                android:id="@+id/river_rush_cloud"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_sad_cloud"
+                android:theme="@style/WhiteTint"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_middle_inhibition" />
+
+            <ImageButton
+                android:id="@+id/river_rush_right_bar"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_right"
+                android:theme="@style/ButtonBadTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_cloud"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_cloud"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_middle_inhibition" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>
