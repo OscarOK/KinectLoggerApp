@@ -51,9 +51,14 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        DialogFragment levelSelector = new GeneralTimeSelector();
-        fragmentTransaction.add(levelSelector, "level_selector");
-        fragmentTransaction.commit();
+        DialogFragment levelSelector = new LevelSelector();
+        fragmentTransaction.replace(R.id.reflex_ridge_container, new GeneralTimeSelector())
+                .addToBackStack(null)
+                .commit();
+
+        /*fragmentTransaction.replace(R.id.reflex_ridge_container, levelSelector)
+                .addToBackStack(null)
+                .commit();*/
 
 
         // TODO: OPEN general_time_fragment

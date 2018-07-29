@@ -101,4 +101,10 @@ public class GeneralTimeSelector extends DialogFragment {
             Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage());
         }
     }
+
+    @Override
+    public void onDetach() {
+        onInputListener = null;
+        super.onDetach();
+    }
 }

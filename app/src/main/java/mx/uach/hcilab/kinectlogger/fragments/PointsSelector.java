@@ -42,7 +42,7 @@ public class PointsSelector extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.general_time_title);
+        builder.setTitle(R.string.points_title);
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.number_pad, null);
         unitText = view.findViewById(R.id.text_view_unit);
@@ -101,5 +101,11 @@ public class PointsSelector extends DialogFragment {
         } catch (ClassCastException e) {
             Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void onDetach() {
+        onInputListener = null;
+        super.onDetach();
     }
 }
