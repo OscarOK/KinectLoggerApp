@@ -13,95 +13,140 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:padding="16dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
             <!-- JUMP -->
 
             <ImageButton
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:theme="@style/ButtonBadTint"
                 android:id="@+id/river_rush_jump_bad"
-                android:src="@drawable/ic_jump"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/ic_jump"
+                android:theme="@style/ButtonBadTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintHorizontal_bias="0.56"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageButton
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:theme="@style/ButtonInhibitionTint"
-                android:src="@drawable/ic_jump"
                 android:id="@+id/river_rush_jump_inhibition"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/ic_jump"
+                android:theme="@style/ButtonInhibitionTint"
+                app:layout_constraintBottom_toTopOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintEnd_toEndOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintStart_toStartOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:theme="@style/ButtonGoodTint"
-                android:src="@drawable/ic_jump"
                 android:id="@+id/river_rush_jump_good"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/ic_jump"
+                android:theme="@style/ButtonGoodTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_jump_inhibition"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_jump_inhibition" />
 
             <!-- MIDDLE BARS -->
 
             <ImageButton
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:theme="@style/ButtonBadTint"
-                android:src="@drawable/ic_bar_middle"
                 android:id="@+id/river_rush_middle_bad"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/ic_bar_middle"
+                android:theme="@style/ButtonBadTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_jump_bad"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_middle_inhibition" />
 
             <ImageButton
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:theme="@style/ButtonInhibitionTint"
-                android:src="@drawable/ic_bar_middle"
                 android:id="@+id/river_rush_middle_inhibition"
-                android:layout_width="wrap_content"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/ic_bar_middle"
+                android:theme="@style/ButtonInhibitionTint"
+                app:layout_constraintBottom_toTopOf="@+id/river_rush_cloud"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_middle_good"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_middle_bad"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_jump_inhibition" />
 
             <ImageButton
-                android:src="@drawable/ic_bar_middle"
                 android:id="@+id/river_rush_middle_good"
-                android:scaleType="fitCenter"
                 style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_middle"
                 android:theme="@style/ButtonGoodTint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintTop_toTopOf="@+id/river_rush_middle_inhibition" />
 
             <!-- CLOUD, BARS HITS -->
 
             <ImageButton
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:theme="@style/ButtonBadTint"
-                android:src="@drawable/ic_bar_left"
                 android:id="@+id/river_rush_left_bar"
-                android:layout_width="wrap_content"
-                android:scaleType="fitCenter"
-                android:layout_height="wrap_content" />
-
-            <ImageButton
-                android:src="@drawable/ic_sad_cloud"
-                android:id="@+id/river_rush_cloud"
-                android:layout_width="wrap_content"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:theme="@style/WhiteTint"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
-                android:layout_height="wrap_content" />
-
-            <ImageButton
-                style="@style/Widget.AppCompat.Button.Colored"
+                android:src="@drawable/ic_bar_left"
                 android:theme="@style/ButtonBadTint"
-                android:src="@drawable/ic_bar_right"
-                android:id="@+id/river_rush_right_bar"
-                android:layout_width="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_cloud"
+                app:layout_constraintEnd_toStartOf="@+id/river_rush_cloud"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <ImageButton
+                android:id="@+id/river_rush_cloud"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:scaleType="fitCenter"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/ic_sad_cloud"
+                android:theme="@style/WhiteTint"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/river_rush_middle_inhibition"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_middle_inhibition" />
+
+            <ImageButton
+                android:id="@+id/river_rush_right_bar"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_right"
+                android:theme="@style/ButtonBadTint"
+                app:layout_constraintBottom_toBottomOf="@+id/river_rush_cloud"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/river_rush_cloud"
+                app:layout_constraintTop_toBottomOf="@+id/river_rush_middle_inhibition" />
 
         </android.support.constraint.ConstraintLayout>
 
