@@ -1,5 +1,7 @@
 package mx.uach.hcilab.kinectlogger;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,16 +9,18 @@ import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class LeaksActivity extends AppCompatActivity {
+public class LeaksActivity extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener{
 
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton;
     int contador=0;
     ImageView vista;
-
+    FrameLayout levelFragment;
+    LevelSelectorFragment fragment;
 
 
     @Override
@@ -36,6 +40,13 @@ public class LeaksActivity extends AppCompatActivity {
         pizquierda = (ImageButton) findViewById(R.id.pizquierda);
         boton = (Button) findViewById(R.id.button);
         vista = (ImageView) findViewById(R.id.imageView);
+        levelFragment = (FrameLayout) findViewById(R.id.fragmentContainer);
+
+        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
+        fragment= new LevelSelectorFragment();
+        transaction.add(R.id.fragmentContainer, fragment);
+        transaction.commit();
 
 
         cabeza.setOnTouchListener(new View.OnTouchListener() {
@@ -133,5 +144,15 @@ public class LeaksActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.reflex_ridge_menu, menu);
         return true;
+    }
+
+    @Override
+    public void onClickSelection() {
+        levelFragment.setClickable(false);
+        levelFragment.setFocusable(false);
+        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
+        transaction.remove(fragment);
+        transaction.commit();
     }
 }

@@ -7,6 +7,14 @@
     tools:context=".LeaksActivity"
     tools:layout_editor_absoluteY="89dp">
 
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="16dp"/>
+
     <ImageButton
         android:id="@+id/bderecho"
         android:layout_width="69dp"
@@ -131,5 +139,7 @@
         app:layout_constraintStart_toEndOf="@+id/pizquierda"
         app:layout_constraintTop_toBottomOf="@+id/torzo"
         app:srcCompat="@drawable/ic_oleada1" />
+
+
 
 </android.support.constraint.ConstraintLayout>

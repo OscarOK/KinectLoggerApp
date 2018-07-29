@@ -36,6 +36,9 @@
     <string name="level_selector_title">Selecciona un nivel</string>
     <string name="general_time_title">Ingresa el tiempo general</string>
     <string name="points_title">Ingresa el puntaje obtenido</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 
 
