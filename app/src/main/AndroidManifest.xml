@@ -37,6 +37,7 @@
         </activity>
         <activity android:name=".LeaksActivity">
         </activity>
+        <activity android:name=".PatientActivity"></activity>
         <activity android:name=".RallyBall" />
         <activity android:name=".RiverRushActivity" />
         <activity android:name=".GameSelectorActivity"></activity>
