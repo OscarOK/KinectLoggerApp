@@ -1,6 +1,10 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,14 +16,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class RallyBall extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener{
+import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
+
+public class RallyBall extends AppCompatActivity implements LevelSelector.OnInputListener{
 
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton,boton2;
-    int contador=0;
+    int contador=0,selected_level;;
     ImageView vista;
     FrameLayout levelFragment;
-    LevelSelectorFragment fragment;
+    FragmentManager fragmentManager;
+    LevelSelector fragment;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -43,11 +50,14 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
         vista = (ImageView) findViewById(R.id.imageView);
         levelFragment = (FrameLayout) findViewById(R.id.fragmentContainer);
 
-        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
-        fragment= new LevelSelectorFragment();
-        transaction.add(R.id.fragmentContainer, fragment);
-        transaction.commit();
+     //   android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+      //  android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
+        fragment= new LevelSelector();
+       // transaction.add(R.id.fragmentContainer, fragment);
+     //   transaction.commit();
+        fragmentManager = getSupportFragmentManager();
+        fragment.show(fragmentManager, "fragment_");
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();
 
 
         cabeza.setOnTouchListener(new View.OnTouchListener() {
@@ -155,13 +165,64 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
     }
 
     @Override
-    public void onClickSelection() {
-        levelFragment.setClickable(false);
+    public void onChoose() {
+       /* levelFragment.setClickable(false);
         levelFragment.setFocusable(false);
         android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
         transaction.remove(fragment);
-        transaction.commit();
+        transaction.commit();*/
+       finish();
     }
+
+    @Override
+    public void goBack() {
+        fragmentManager.popBackStack("fragment_", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragment.show(fragmentManager, "fragment_");
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();
+    }
+
+    @Override
+    public void sendSelectedNumber(int number) {
+       /* selected_level = number;
+        fragment.show(fragmentManager, "fragment_");
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();*/
+        selected_level = number;
+
+
+        String message = getResources().getString(R.string.confirmation_message_no_time, selected_level);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(RallyBall.this);
+        builder.setTitle(R.string.confirmation_title);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.fragment_start_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                for(int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
+                    fragmentManager.popBackStack();
+                }
+                // TODO: START CHRONOMETER
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.fragment_back_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                goBack();
+            }
+        });
+        builder.setNeutralButton(R.string.fragment_cancel_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                onChoose();
+            }
+        });
+        Dialog dialogFragment = builder.create();
+        dialogFragment.setCanceledOnTouchOutside(false);
+        dialogFragment.show();
+
+    }
+
+
 }
 

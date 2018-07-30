@@ -20,6 +20,8 @@ public class LevelSelector extends DialogFragment {
     private static final String TAG = "LevelSelector";
 
     public interface OnInputListener {
+        void goBack();
+
         public void sendSelectedNumber(int number);
 
         public void onChoose();

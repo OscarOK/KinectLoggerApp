@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LeaksActivity"
-    tools:layout_editor_absoluteY="89dp">
+    tools:layout_editor_absoluteY="89dp"
+    tools:ignore="ExtraText">
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
         android:elevation="16dp"
-        android:focusable="true"
         tools:layout_editor_absoluteX="50dp"
         tools:layout_editor_absoluteY="0dp" >
 
