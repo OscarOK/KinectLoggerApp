@@ -18,29 +18,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TherapistActivity">
+        <activity android:name=".TherapistActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PatientManagerActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".TherapistManagerActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".ReflexRidgeActivity"
-            android:screenOrientation="landscape">
-        </activity>
-        <activity android:name=".LeaksActivity">
-        </activity>
-        <activity android:name=".PatientActivity"></activity>
-        <activity android:name=".RallyBall" />
-        <activity android:name=".RiverRushActivity" />
-        <activity android:name=".GameSelectorActivity"></activity>
+        <activity android:name=".PatientManagerActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".TherapistManagerActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ReflexRidgeActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".LeaksActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PatientActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".RallyBall"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RiverRushActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".GameSelectorActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
