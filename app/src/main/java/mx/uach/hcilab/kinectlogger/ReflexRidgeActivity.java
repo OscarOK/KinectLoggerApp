@@ -1,12 +1,17 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -38,6 +43,12 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     private ImageButton imageButtons[] = new ImageButton[5];
 
+    private FragmentManager fragmentManager;
+    private DialogFragment[] fragments = new DialogFragment[3];
+    private int fragmentIndex = 0;
+
+    private int selected_level;
+    private int general_time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +59,13 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // TODO: OPEN level_selector_fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragments[0] = new LevelSelector();
+        fragments[1] = new GeneralTimeSelector();
+        fragments[2] = new PointsSelector();
 
-        DialogFragment levelSelector = new LevelSelector();
-        fragmentTransaction.replace(R.id.reflex_ridge_container, new GeneralTimeSelector())
-                .addToBackStack(null)
-                .commit();
-
-        /*fragmentTransaction.replace(R.id.reflex_ridge_container, levelSelector)
-                .addToBackStack(null)
-                .commit();*/
-
+        fragmentManager = getSupportFragmentManager();
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
 
         // TODO: OPEN general_time_fragment
         // TODO: OPEN confirmation_fragment
@@ -153,7 +159,9 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            // TODO: OPEN POINTS FRAGMENT
+            fragmentIndex++;
+            fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+            fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -178,12 +186,47 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     @Override
     public void sendSelectedNumber(int number) {
-        Toast.makeText(this, String.valueOf(number), Toast.LENGTH_SHORT).show();
+        selected_level = number;
+        fragmentIndex++;
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
     }
 
     @Override
     public void sendSelectedTime(int time) {
-        Toast.makeText(this, String.valueOf(time), Toast.LENGTH_SHORT).show();
+        general_time = time;
+        fragmentIndex++;
+
+        String message = getResources().getString(R.string.confirmation_message, selected_level, general_time);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ReflexRidgeActivity.this);
+        builder.setTitle(R.string.confirmation_title);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.fragment_start_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                for(int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
+                    fragmentManager.popBackStack();
+                }
+                // TODO: START CHRONOMETER
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.fragment_back_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                goBack();
+            }
+        });
+        builder.setNeutralButton(R.string.fragment_cancel_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                onChoose();
+            }
+        });
+        Dialog dialogFragment = builder.create();
+        dialogFragment.setCanceledOnTouchOutside(false);
+        dialogFragment.show();
     }
 
     @Override
@@ -193,7 +236,10 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     @Override
     public void goBack() {
-
+        fragmentIndex--;
+        fragmentManager.popBackStack("fragment_" + fragmentIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
     }
 
     @Override

@@ -45,7 +45,7 @@
         numpad:numpad_background_resource="@drawable/numpad_background"
         numpad:numpad_image_resource="@drawable/ic_backspace"
         numpad:numpad_text_color="@android:color/black"
-        numpad:numpad_text_limit="10"
+        numpad:numpad_text_limit="5"
         numpad:numpad_text_size="18dp" />
 
 </android.support.constraint.ConstraintLayout>
