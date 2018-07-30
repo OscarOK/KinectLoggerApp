@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 
@@ -19,6 +22,8 @@ public class GameSelectorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_selector);
+
+        if(getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerViewGames = findViewById(R.id.game_selector_recycle_view);
         recyclerViewGames.setLayoutManager(
@@ -35,5 +40,19 @@ public class GameSelectorActivity extends AppCompatActivity {
 
         GamesAdapter gamesAdapter = new GamesAdapter(gameCards);
         recyclerViewGames.setAdapter(gamesAdapter);
+
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(recyclerViewGames); //Snaps cards to the center of screen
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

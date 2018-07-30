@@ -18,14 +18,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.HashMap;
+
+import javax.annotation.Nullable;
 
 import mx.uach.hcilab.kinectlogger.adapter.FireStoreAdapter;
 import mx.uach.hcilab.kinectlogger.util.FirestoreHelper;
@@ -46,6 +53,8 @@ public class PatientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient);
+
+        if(getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mRecyclerView = (DiscreteScrollView) findViewById(R.id.patientRecyclerView);
         mConfirmFab = (FloatingActionButton) findViewById(R.id.patientConfirmFab);
@@ -82,9 +91,21 @@ public class PatientActivity extends AppCompatActivity {
         }));
     }
 
+
+
     @Override
     protected void onResume() {
-        mWarningText.setVisibility(View.VISIBLE);
+        FirebaseFirestore.getInstance().collection(FirestoreHelper.PATIENT_COLLECTION).limit(1).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.getResult().isEmpty()){
+                            mWarningText.setVisibility(View.VISIBLE);
+                        } else {
+                            mWarningText.setVisibility(View.GONE);
+                        }
+                    }
+                });
         fireStoreAdapter.startListening();
         super.onResume();
     }
@@ -177,7 +198,9 @@ public class PatientActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.action_add_patient){
+        if (id == android.R.id.home) {
+            finish();
+        } else if(id == R.id.action_add_patient){
             Intent intent = new Intent(PatientActivity.this, PatientManagerActivity.class);
             startActivity(intent);
         }
