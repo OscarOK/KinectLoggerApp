@@ -38,6 +38,7 @@
     <string name="points_title">Ingresa el puntaje obtenido</string>
     <string name="confirmation_title">Confirmación</string>
     <string name="confirmation_message" formatted="false">Estos son los datos seleccionados, al confirmarlos empieza a correr el tiempo.\nNivel: %1$d\nTiempo general: %2$d s</string>
+    <string name="confirmation_message_no_time" formatted="false">Estos son los datos seleccionados, al confirmarlos empieza a correr el tiempo.\nNivel: %1$d</string>
 
     <string name="add_therapist">Añadir terapeuta</string>
     <string name="no_therapists">No se han encontrado terapeutas</string>
@@ -49,6 +50,7 @@
     <string name="fragment_back_button">Atras</string>
     <string name="fragment_cancel_button">Cancelar</string>
     <string name="fragment_start_button">Empezar</string>
+    <string name="fragment_finish_button">Terminar</string>
 
     <string name="button_play">Jugar</string>
     <string name="text_view_title_dummy">Titulo</string>

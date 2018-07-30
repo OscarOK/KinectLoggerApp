@@ -65,24 +65,10 @@ public class PointsSelector extends DialogFragment {
 
         builder.setView(view);
 
-        builder.setPositiveButton(R.string.fragment_next_button, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.fragment_finish_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 onInputListener.sendSelectedPoints(Integer.parseInt(timeInput.getText().toString()));
-            }
-        });
-
-        builder.setNegativeButton(R.string.fragment_back_button, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                onInputListener.goBack();
-            }
-        });
-
-        builder.setNeutralButton(R.string.fragment_cancel_button, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                onInputListener.onChoose();
             }
         });
 

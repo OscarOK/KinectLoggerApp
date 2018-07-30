@@ -58,7 +58,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         // Menu
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // TODO: OPEN level_selector_fragment
+        // Fragments stuff
         fragments[0] = new LevelSelector();
         fragments[1] = new GeneralTimeSelector();
         fragments[2] = new PointsSelector();
@@ -67,8 +67,6 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
 
-        // TODO: OPEN general_time_fragment
-        // TODO: OPEN confirmation_fragment
 
         // Init actions buttons
         imageButtons[0] = findViewById(R.id.button_jump);
@@ -159,7 +157,6 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            fragmentIndex++;
             fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
             fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
         }
@@ -232,6 +229,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     @Override
     public void sendSelectedPoints(int points) {
         Toast.makeText(this, String.valueOf(points), Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override

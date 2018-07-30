@@ -1,7 +1,12 @@
 package mx.uach.hcilab.kinectlogger;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.support.annotation.ColorRes;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +17,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-public class RiverRushActivity extends AppCompatActivity {
+import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
+import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
+import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
+
+public class RiverRushActivity extends AppCompatActivity implements LevelSelector.OnInputListener, PointsSelector.OnInputListener {
 
     private ImageButton badJump;
     private ImageButton inhibitionJump;
@@ -26,6 +35,12 @@ public class RiverRushActivity extends AppCompatActivity {
 
     private boolean isHappy = false;
 
+    private FragmentManager fragmentManager;
+    private DialogFragment[] fragments = new DialogFragment[2];
+    private int fragmentIndex = 0;
+
+    private int selected_level;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +48,15 @@ public class RiverRushActivity extends AppCompatActivity {
 
         // Menu
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Fragments stuff
+        fragments[0] = new LevelSelector();
+        fragments[1] = new PointsSelector();
+
+        fragmentManager = getSupportFragmentManager();
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+
 
         cloud = findViewById(R.id.river_rush_cloud);
 
@@ -76,7 +100,8 @@ public class RiverRushActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            // TODO: OPEN POINTS FRAGMENT
+            fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+            fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -90,4 +115,59 @@ public class RiverRushActivity extends AppCompatActivity {
                 PorterDuff.Mode.MULTIPLY);
     }
 
+    @Override
+    public void sendSelectedNumber(int number) {
+        selected_level = number;
+
+        fragmentIndex++;
+
+        String message = getResources().getString(R.string.confirmation_message_no_time, selected_level);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(RiverRushActivity.this);
+        builder.setTitle(R.string.confirmation_title);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.fragment_start_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                for(int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
+                    fragmentManager.popBackStack();
+                }
+                // TODO: START CHRONOMETER
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.fragment_back_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                goBack();
+            }
+        });
+        builder.setNeutralButton(R.string.fragment_cancel_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                onChoose();
+            }
+        });
+        Dialog dialogFragment = builder.create();
+        dialogFragment.setCanceledOnTouchOutside(false);
+        dialogFragment.show();
+    }
+
+    @Override
+    public void sendSelectedPoints(int points) {
+        finish();
+    }
+
+    @Override
+    public void goBack() {
+        fragmentIndex--;
+        fragmentManager.popBackStack("fragment_" + fragmentIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+    }
+
+    @Override
+    public void onChoose() {
+        finish();
+    }
 }
