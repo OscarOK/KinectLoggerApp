@@ -34,6 +34,8 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.Pivot;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.HashMap;
 
@@ -52,6 +54,7 @@ public class TherapistActivity extends AppCompatActivity {
 
     DiscreteScrollView mRecyclerView;
     FloatingActionButton mConfirmFab;
+    TextView mWarningText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class TherapistActivity extends AppCompatActivity {
 
         mRecyclerView = (DiscreteScrollView) findViewById(R.id.therapistRecyclerView);
         mConfirmFab = (FloatingActionButton) findViewById(R.id.therapistConfirmFab);
+        mWarningText = (TextView) findViewById(R.id.therapistWarningText);
 
         mConfirmFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +98,7 @@ public class TherapistActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        mWarningText.setVisibility(View.VISIBLE);
         fireStoreAdapter.startListening();
         super.onResume();
     }
@@ -113,6 +118,7 @@ public class TherapistActivity extends AppCompatActivity {
         @NonNull
         @Override
         public TherapistViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            mWarningText.setVisibility(View.GONE);
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
             return new TherapistViewHolder(view);
         }
@@ -121,19 +127,17 @@ public class TherapistActivity extends AppCompatActivity {
         public void onBindViewHolder(final @NonNull TherapistViewHolder holder, int position) {
             DocumentSnapshot snapshot = this.getSnapshot(position);
             final String name = snapshot.getString(Therapist.NAME);
-            String paternal = snapshot.getString(Therapist.PATERNAL);
-            String maternal = snapshot.getString(Therapist.MATERNAL);
+            final String paternal = snapshot.getString(Therapist.PATERNAL);
+            final String maternal = snapshot.getString(Therapist.MATERNAL);
+            final String key = snapshot.getString(Therapist.KEY);
             holder.text.setText(snapshot.getString(Therapist.NAME));
 
-            final String key = FirestoreHelper.generateUniqueKey(new Therapist(name, paternal, maternal));
             if(images.containsKey(key)){
-                Log.d("MyLog", "Found photo for user " + key);
                 String filePath = images.get(key);
                 Bitmap photo = BitmapFactory.decodeFile(filePath);
                 holder.image.setImageBitmap(photo);
             } else {
                 holder.image.setImageDrawable(getResources().getDrawable(R.drawable.ic_empty_pp));
-                Log.d("MyLog", "Downloading photo for user " + key);
                 StorageHelper.downloadImage(key, new StorageHelper.OnDownloadImageListener() {
                     @Override
                     public void onSuccess(File file) {
@@ -141,12 +145,10 @@ public class TherapistActivity extends AppCompatActivity {
                         Bitmap photo = BitmapFactory.decodeFile(filePath);
                         images.put(key, filePath);
                         holder.image.setImageBitmap(photo);
-                        Log.d("MyLog", "Success for user " + key);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Log.d("MyLog", "Exception for user " + key + ", " + e.getMessage());
                     }
                 });
             }

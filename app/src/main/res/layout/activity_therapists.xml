@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".TherapistActivity">
 
+    <TextView
+        android:id="@+id/therapistWarningText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/therapistConfirmFab"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/no_therapists"
+        android:textAlignment="center"/>
+
     <com.yarolegovich.discretescrollview.DiscreteScrollView
         android:id="@+id/therapistRecyclerView"
         android:layout_width="0dp"

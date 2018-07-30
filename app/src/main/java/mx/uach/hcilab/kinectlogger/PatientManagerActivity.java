@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.graphics.Bitmap;
@@ -28,10 +29,11 @@ import java.util.Date;
 import mx.uach.hcilab.kinectlogger.util.*;
 
 public class PatientManagerActivity extends AppCompatActivity {
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
     CameraIntentHelper mCameraIntentHelper;
     PermissionsHelper mPermissionHelper;
+
+    Uri photoPath = null;
 
     private static final String TAG = "PatientManagerActivity";
 
@@ -39,6 +41,11 @@ public class PatientManagerActivity extends AppCompatActivity {
     FloatingActionButton mTakePhotoButton;
     @BindView(R.id.image_view_patient)
     ImageView mPatientImageView;
+
+    @BindView(R.id.text_patient_name)
+    EditText nameEditText;
+    @BindView(R.id.text_patient_lastname) EditText paternalEditText;
+    @BindView(R.id.text_patient_lastname_2) EditText maternalEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,24 @@ public class PatientManagerActivity extends AppCompatActivity {
         }
     }
 
+    @OnClick(R.id.button_save)
+    protected void clickedSaveButton(){
+        if(nameEditText.getText().toString().isEmpty() ||
+                paternalEditText.getText().toString().isEmpty() ||
+                maternalEditText.getText().toString().isEmpty() ||
+                photoPath == null){
+            Toast.makeText(getApplicationContext(), R.string.warning_fields_incomplete, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Patient patient = new Patient(nameEditText.getText().toString(),
+                paternalEditText.getText().toString(),
+                maternalEditText.getText().toString(),
+                photoPath);
+        FirestoreHelper.uploadPatient(patient);
+        finish();
+    }
+
 
     @OnClick(R.id.button_take_photo)
     protected void takePhoto(){
@@ -102,8 +127,9 @@ public class PatientManagerActivity extends AppCompatActivity {
         mCameraIntentHelper = new CameraIntentHelper(this, new CameraIntentHelperCallback() {
             @Override
             public void onPhotoUriFound(Date dateCameraIntentStarted, Uri photoUri, int rotateXDegrees) {
-                Toast.makeText(getApplicationContext(), getString(R.string.activity_camera_intent_photo_uri_found) + photoUri.toString(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), getString(R.string.activity_camera_intent_photo_uri_found) + photoUri.toString(),Toast.LENGTH_LONG).show();
 
+                photoPath = photoUri;
                 Bitmap photo = BitmapHelper.readBitmap(PatientManagerActivity.this, photoUri);
                 if (photo != null) {
                     photo = BitmapHelper.shrinkBitmap(photo, 300, rotateXDegrees);

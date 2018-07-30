@@ -20,11 +20,9 @@ public class FirestoreHelper {
 
 
     public static void uploadTherapist(Therapist therapist){
-        String uniqueKey = generateUniqueKey(therapist);
-
         FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
         CollectionReference collection = firestoreDB.collection(THERAPIST_COLLECTION);
-        collection.document(uniqueKey).set(therapist.toMap())
+        collection.document(therapist.getKey()).set(therapist.toMap())
         .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -38,15 +36,13 @@ public class FirestoreHelper {
             }
         });
 
-        StorageHelper.uploadImage(therapist.getPicturePath(), uniqueKey, null);
+        StorageHelper.uploadImage(therapist.getPicturePath(), therapist.getKey(), null);
     }
 
     public static void uploadPatient(Patient patient){
-        String uniqueKey = generateUniqueKey(patient);
-
         FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
         CollectionReference collection = firestoreDB.collection(PATIENT_COLLECTION);
-        collection.document(uniqueKey).set(patient.toMap())
+        collection.document(patient.getKey()).set(patient.toMap())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -60,7 +56,7 @@ public class FirestoreHelper {
                     }
                 });
 
-        StorageHelper.uploadImage(patient.getPicturePath(), uniqueKey, null);
+        StorageHelper.uploadImage(patient.getPicturePath(), patient.getKey(), null);
     }
 
     public static String generateUniqueKey(User user){

@@ -86,11 +86,6 @@ public class TherapistManagerActivity extends AppCompatActivity {
         }
     }
 
-
-    /**
-     * Añadido por Héctor para probar la subida de terapeutas a la base de datos,
-     * modificar si es necesario:)
-     */
     @OnClick(R.id.button_save)
     protected void clickedSaveButton(){
         if(nameEditText.getText().toString().isEmpty() ||
@@ -106,6 +101,7 @@ public class TherapistManagerActivity extends AppCompatActivity {
                 maternalEditText.getText().toString(),
                 photoPath);
         FirestoreHelper.uploadTherapist(therapist);
+        finish();
     }
 
     @OnClick(R.id.button_take_photo)

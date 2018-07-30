@@ -62,7 +62,7 @@ public abstract class FireStoreAdapter<VH extends RecyclerView.ViewHolder>
     }
 
     public DocumentSnapshot getSnapshot(int index) {
-        return mSnapshots.get(index);
+        return (index < mSnapshots.size() ? mSnapshots.get(index) : null);
     }
 
     protected void onError(FirebaseFirestoreException e) {};
