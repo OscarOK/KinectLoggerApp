@@ -39,7 +39,8 @@ public class RiverRushActivity extends AppCompatActivity implements LevelSelecto
     private DialogFragment[] fragments = new DialogFragment[2];
     private int fragmentIndex = 0;
 
-    private int selected_level;
+    private int selected_level = 1;
+    private static final int MAX_LEVEL = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,12 @@ public class RiverRushActivity extends AppCompatActivity implements LevelSelecto
         setContentView(R.layout.activity_river_rush);
 
         // Menu
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // Fragments stuff
-        fragments[0] = new LevelSelector();
+        fragments[0] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
         fragments[1] = new PointsSelector();
 
         fragmentManager = getSupportFragmentManager();
@@ -162,6 +165,9 @@ public class RiverRushActivity extends AppCompatActivity implements LevelSelecto
     public void goBack() {
         fragmentIndex--;
         fragmentManager.popBackStack("fragment_" + fragmentIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (fragmentIndex == 0) {
+            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+        }
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
     }

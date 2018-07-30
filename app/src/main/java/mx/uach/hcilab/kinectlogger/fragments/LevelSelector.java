@@ -31,6 +31,17 @@ public class LevelSelector extends DialogFragment {
     public LevelSelector() {
     }
 
+    public static LevelSelector newInstance(int maxLevel, int currentNumber) {
+
+        Bundle args = new Bundle();
+        args.putInt("max_level", maxLevel);
+        args.putInt("current_number", currentNumber);
+
+        LevelSelector fragment = new LevelSelector();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +53,15 @@ public class LevelSelector extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.level_selector_title);
 
+
         View view = getActivity().getLayoutInflater().inflate(R.layout.level_selector, null);
         numberPicker = view.findViewById(R.id.level_selector_number_picker);
+
+        if (getArguments() != null) {
+            numberPicker.setMaxValue(getArguments().getInt("max_level"));
+            numberPicker.setValue(getArguments().getInt("current_number"));
+        }
+
         builder.setView(view);
 
         builder.setPositiveButton(R.string.fragment_next_button, new DialogInterface.OnClickListener() {

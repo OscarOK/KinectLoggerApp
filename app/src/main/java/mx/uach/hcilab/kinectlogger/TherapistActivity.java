@@ -63,6 +63,7 @@ public class TherapistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_therapists);
+        startActivity(new Intent(this, RiverRushActivity.class));
 
         mRecyclerView = (DiscreteScrollView) findViewById(R.id.therapistRecyclerView);
         mConfirmFab = (FloatingActionButton) findViewById(R.id.therapistConfirmFab);
