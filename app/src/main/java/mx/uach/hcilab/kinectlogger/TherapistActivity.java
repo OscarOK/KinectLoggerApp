@@ -27,9 +27,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.Pivot;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
@@ -98,7 +101,17 @@ public class TherapistActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        mWarningText.setVisibility(View.VISIBLE);
+        FirebaseFirestore.getInstance().collection(FirestoreHelper.THERAPIST_COLLECTION).limit(1).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.getResult().isEmpty()){
+                            mWarningText.setVisibility(View.VISIBLE);
+                        } else {
+                            mWarningText.setVisibility(View.GONE);
+                        }
+                    }
+                });
         fireStoreAdapter.startListening();
         super.onResume();
     }
