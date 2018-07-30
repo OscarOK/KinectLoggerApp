@@ -1,4 +1,4 @@
-package mx.uach.hcilab.kinectlogger;
+package mx.uach.hcilab.kinectlogger.games;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
+import mx.uach.hcilab.kinectlogger.R;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
 

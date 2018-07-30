@@ -1,4 +1,4 @@
-package mx.uach.hcilab.kinectlogger;
+package mx.uach.hcilab.kinectlogger.games;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +11,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class LeaksActivity extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener{
+import mx.uach.hcilab.kinectlogger.LevelSelectorFragment;
+import mx.uach.hcilab.kinectlogger.R;
+
+public class LeaksActivity extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener {
 
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton;

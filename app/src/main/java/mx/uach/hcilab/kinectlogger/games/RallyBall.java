@@ -1,4 +1,4 @@
-package mx.uach.hcilab.kinectlogger;
+package mx.uach.hcilab.kinectlogger.games;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import mx.uach.hcilab.kinectlogger.R;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 
 public class RallyBall extends AppCompatActivity implements LevelSelector.OnInputListener{

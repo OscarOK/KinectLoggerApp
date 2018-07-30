@@ -12,6 +12,10 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 import mx.uach.hcilab.kinectlogger.adapter.GamesAdapter;
+import mx.uach.hcilab.kinectlogger.games.LeaksActivity;
+import mx.uach.hcilab.kinectlogger.games.RallyBall;
+import mx.uach.hcilab.kinectlogger.games.ReflexRidgeActivity;
+import mx.uach.hcilab.kinectlogger.games.RiverRushActivity;
 
 public class GameSelectorActivity extends AppCompatActivity {
 

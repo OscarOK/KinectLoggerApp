@@ -1,9 +1,8 @@
-package mx.uach.hcilab.kinectlogger;
+package mx.uach.hcilab.kinectlogger.games;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -11,9 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import mx.uach.hcilab.kinectlogger.R;
 import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
