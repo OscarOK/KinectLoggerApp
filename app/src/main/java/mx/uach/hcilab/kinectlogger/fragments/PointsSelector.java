@@ -49,7 +49,7 @@ public class PointsSelector extends DialogFragment {
         timeInput = view.findViewById(R.id.time_input);
         Numpad numpad = view.findViewById(R.id.num);
 
-        unitText.setVisibility(View.INVISIBLE);
+        unitText.setVisibility(View.GONE);
 
         numpad.setOnTextChangeListner(new TextGetListner() {
             @Override

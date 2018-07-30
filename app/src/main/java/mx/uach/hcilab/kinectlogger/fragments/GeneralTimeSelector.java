@@ -35,6 +35,17 @@ public class GeneralTimeSelector extends DialogFragment {
     public GeneralTimeSelector() {
     }
 
+    public static GeneralTimeSelector newInstance(String display) {
+
+        Bundle args = new Bundle();
+
+        args.putString("display", display);
+
+        GeneralTimeSelector fragment = new GeneralTimeSelector();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +60,10 @@ public class GeneralTimeSelector extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.number_pad, null);
         timeInput = view.findViewById(R.id.time_input);
         Numpad numpad = view.findViewById(R.id.num);
+
+        if (getArguments() != null) {
+            timeInput.setText(getArguments().getString("display"));
+        }
 
         numpad.setOnTextChangeListner(new TextGetListner() {
             @Override
