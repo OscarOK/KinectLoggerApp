@@ -49,10 +49,14 @@ public class PatientActivity extends AppCompatActivity {
     FloatingActionButton mConfirmFab;
     TextView mWarningText;
 
+    String therapistKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient);
+
+        therapistKey = getIntent().getStringExtra(Therapist.THERAPIST_KEY);
 
         if(getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -184,6 +188,7 @@ public class PatientActivity extends AppCompatActivity {
 
         Intent intent = new Intent(PatientActivity.this, GameSelectorActivity.class);
         intent.putExtra(Patient.PATIENT_KEY, key);
+        intent.putExtra(Therapist.THERAPIST_KEY, therapistKey);
         startActivity(intent);
     }
 
