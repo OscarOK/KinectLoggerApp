@@ -16,11 +16,15 @@ import mx.uach.hcilab.kinectlogger.games.LeaksActivity;
 import mx.uach.hcilab.kinectlogger.games.RallyBall;
 import mx.uach.hcilab.kinectlogger.games.ReflexRidgeActivity;
 import mx.uach.hcilab.kinectlogger.games.RiverRushActivity;
+import mx.uach.hcilab.kinectlogger.util.GameLogger;
 
 public class GameSelectorActivity extends AppCompatActivity {
 
     private ArrayList<GameCard> gameCards;
     private RecyclerView recyclerViewGames;
+
+    private String therapistKey;
+    private String patientKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,9 @@ public class GameSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_selector);
 
         if(getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        therapistKey = getIntent().getStringExtra(Therapist.THERAPIST_KEY);
+        patientKey = getIntent().getStringExtra(Patient.PATIENT_KEY);
 
         recyclerViewGames = findViewById(R.id.game_selector_recycle_view);
         recyclerViewGames.setLayoutManager(
