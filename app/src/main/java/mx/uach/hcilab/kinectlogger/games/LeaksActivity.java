@@ -1,6 +1,5 @@
-package mx.uach.hcilab.kinectlogger;
+package mx.uach.hcilab.kinectlogger.games;
 
-import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,23 +11,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class RallyBall extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener{
+import mx.uach.hcilab.kinectlogger.LevelSelectorFragment;
+import mx.uach.hcilab.kinectlogger.R;
+
+public class LeaksActivity extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener {
 
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
-    Button boton,boton2;
+    Button boton;
     int contador=0;
     ImageView vista;
     FrameLayout levelFragment;
     LevelSelectorFragment fragment;
 
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rally_ball);
+        setContentView(R.layout.activity_leaks);
 
-        getSupportActionBar().setTitle("Rally Ball"); // for set actionbar title
+        getSupportActionBar().setTitle("20,000 leaks"); // for set actionbar title
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -39,7 +40,6 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
         pderecha = (ImageButton) findViewById(R.id.pderecha);
         pizquierda = (ImageButton) findViewById(R.id.pizquierda);
         boton = (Button) findViewById(R.id.button);
-        boton2 = (Button) findViewById(R.id.button2);
         vista = (ImageView) findViewById(R.id.imageView);
         levelFragment = (FrameLayout) findViewById(R.id.fragmentContainer);
 
@@ -54,10 +54,10 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    cabeza.setImageDrawable(getResources().getDrawable(R.drawable.ic_cabezav));
+                    cabeza.setImageDrawable(getDrawable(R.drawable.ic_cabezav));
                 }
                 else{
-                    cabeza.setImageDrawable(getResources().getDrawable(R.drawable.ic_cabeza));
+                    cabeza.setImageDrawable(getDrawable(R.drawable.ic_cabeza));
                 }
                 return false;
             }
@@ -66,10 +66,10 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    torzo.setImageDrawable(getResources().getDrawable(R.drawable.ic_torzov));
+                    torzo.setImageDrawable(getDrawable(R.drawable.ic_torzov));
                 }
                 else{
-                    torzo.setImageDrawable(getResources().getDrawable(R.drawable.ic_torzo));
+                    torzo.setImageDrawable(getDrawable(R.drawable.ic_torzo));
                 }
                 return false;
             }
@@ -78,10 +78,10 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    bderecho.setImageDrawable(getResources().getDrawable(R.drawable.ic_bderechov));
+                    bderecho.setImageDrawable(getDrawable(R.drawable.ic_bderechov));
                 }
                 else{
-                    bderecho.setImageDrawable(getResources().getDrawable(R.drawable.ic_derecho));
+                    bderecho.setImageDrawable(getDrawable(R.drawable.ic_derecho));
                 }
                 return false;
             }
@@ -90,10 +90,10 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    bizquierdo.setImageDrawable(getResources().getDrawable(R.drawable.ic_bizquierdov));
+                    bizquierdo.setImageDrawable(getDrawable(R.drawable.ic_bizquierdov));
                 }
                 else{
-                    bizquierdo.setImageDrawable(getResources().getDrawable(R.drawable.ic_izquierdo));
+                    bizquierdo.setImageDrawable(getDrawable(R.drawable.ic_izquierdo));
                 }
                 return false;
             }
@@ -102,10 +102,10 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    pderecha.setImageDrawable(getResources().getDrawable(R.drawable.ic_pderechav));
+                    pderecha.setImageDrawable(getDrawable(R.drawable.ic_pderechav));
                 }
                 else{
-                    pderecha.setImageDrawable(getResources().getDrawable(R.drawable.ic_pderecha));
+                    pderecha.setImageDrawable(getDrawable(R.drawable.ic_pderecha));
                 }
                 return false;
             }
@@ -114,10 +114,10 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    pizquierda.setImageDrawable(getResources().getDrawable(R.drawable.ic_pizquierdav));
+                    pizquierda.setImageDrawable(getDrawable(R.drawable.ic_pizquierdav));
                 }
                 else{
-                    pizquierda.setImageDrawable(getResources().getDrawable(R.drawable.ic_pizquierda));
+                    pizquierda.setImageDrawable(getDrawable(R.drawable.ic_pizquierda));
                 }
                 return false;
             }
@@ -128,22 +128,15 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
                 contador++;
                 switch (contador){
                     case 1:
-                        vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada2));
+                        vista.setImageDrawable(getDrawable(R.drawable.ic_oleada2));
                         break;
 
                     case 2:
-                        vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada3));
+                        vista.setImageDrawable(getDrawable(R.drawable.ic_oleada3));
                         break;
 
                     case 3 : finish();
                 }
-            }
-        });
-
-        boton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
     }
@@ -164,4 +157,3 @@ public class RallyBall extends AppCompatActivity implements LevelSelectorFragmen
         transaction.commit();
     }
 }
-

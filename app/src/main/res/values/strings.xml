@@ -31,7 +31,7 @@
     <string name="button_action_inhibition">Inhibición</string>
     <string name="warning_fields_incomplete">Por favor, llena todos los campos.</string>
 
-    <string name="action_finish_reflex_ridge">Terminar Registro</string>
+    <string name="action_finish_session">Terminar Sesión</string>
 
     <string name="level_selector_title">Selecciona un nivel</string>
     <string name="general_time_title">Ingresa el tiempo general</string>

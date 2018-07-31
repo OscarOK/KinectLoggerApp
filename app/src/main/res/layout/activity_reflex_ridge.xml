@@ -7,7 +7,7 @@
     xmlns:numpad="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="16dp"
-    tools:context=".ReflexRidgeActivity">
+    tools:context=".games.ReflexRidgeActivity">
 
     <FrameLayout
         android:id="@+id/reflex_ridge_container"

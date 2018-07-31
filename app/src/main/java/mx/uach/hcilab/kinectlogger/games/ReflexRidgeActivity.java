@@ -1,9 +1,8 @@
-package mx.uach.hcilab.kinectlogger;
+package mx.uach.hcilab.kinectlogger.games;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -11,9 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import mx.uach.hcilab.kinectlogger.R;
 import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
@@ -47,7 +45,8 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     private DialogFragment[] fragments = new DialogFragment[3];
     private int fragmentIndex = 0;
 
-    private int selected_level;
+    private static final int MAX_LEVEL = 9;
+    private int selected_level = 1;
     private int general_time;
 
     @Override
@@ -56,11 +55,13 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_reflex_ridge);
 
         // Menu
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // Fragments stuff
-        fragments[0] = new LevelSelector();
-        fragments[1] = new GeneralTimeSelector();
+        fragments[0] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+        fragments[1] = GeneralTimeSelector.newInstance("0");
         fragments[2] = new PointsSelector();
 
         fragmentManager = getSupportFragmentManager();
@@ -185,6 +186,11 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     public void sendSelectedNumber(int number) {
         selected_level = number;
         fragmentIndex++;
+        if (fragmentIndex == 0) {
+            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+        } else if (fragmentIndex == 1) {
+            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(general_time));
+        }
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
     }
@@ -236,6 +242,11 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     public void goBack() {
         fragmentIndex--;
         fragmentManager.popBackStack("fragment_" + fragmentIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (fragmentIndex == 0) {
+            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+        } else if (fragmentIndex == 1) {
+            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(general_time));
+        }
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
     }
