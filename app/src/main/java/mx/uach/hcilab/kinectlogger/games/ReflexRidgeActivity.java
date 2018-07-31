@@ -23,13 +23,14 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import mx.uach.hcilab.kinectlogger.R;
+import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
 import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
 
 public class ReflexRidgeActivity extends AppCompatActivity implements
         LevelSelector.OnInputListener, GeneralTimeSelector.OnInputListener,
-        PointsSelector.OnInputListener {
+        PointsSelector.OnInputListener, ConfirmFragment.OnInputListener {
 
     private static final long RESPONSE_DELAY = 1000;
 
@@ -200,42 +201,27 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         general_time = time;
         fragmentIndex++;
 
-        String message = getResources().getString(R.string.confirmation_message, selected_level, general_time);
+        DialogFragment confirmDialog = ConfirmFragment
+                .newInstance(
+                        getResources().getString(
+                                R.string.confirmation_message, selected_level, general_time
+                        ));
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(ReflexRidgeActivity.this);
-        builder.setTitle(R.string.confirmation_title);
-        builder.setMessage(message);
-        builder.setPositiveButton(R.string.fragment_start_button, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                for(int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
-                    fragmentManager.popBackStack();
-                }
-                // TODO: START CHRONOMETER
-                dialogInterface.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.fragment_back_button, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                goBack();
-            }
-        });
-        builder.setNeutralButton(R.string.fragment_cancel_button, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                onChoose();
-            }
-        });
-        Dialog dialogFragment = builder.create();
-        dialogFragment.setCanceledOnTouchOutside(false);
-        dialogFragment.show();
+        confirmDialog.show(fragmentManager, "confirmation");
     }
 
     @Override
     public void sendSelectedPoints(int points) {
         Toast.makeText(this, String.valueOf(points), Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void confirmPressed() {
+        for(int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
+            fragmentManager.popBackStack();
+        }
+        // TODO: START CHRONOMETER
     }
 
     @Override
