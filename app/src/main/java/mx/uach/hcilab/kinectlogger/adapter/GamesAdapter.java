@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import mx.uach.hcilab.kinectlogger.GameCard;
+import mx.uach.hcilab.kinectlogger.util.GameCard;
 import mx.uach.hcilab.kinectlogger.R;
 
 public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolderGames> {

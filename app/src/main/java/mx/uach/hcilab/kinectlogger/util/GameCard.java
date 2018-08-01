@@ -1,4 +1,4 @@
-package mx.uach.hcilab.kinectlogger;
+package mx.uach.hcilab.kinectlogger.util;
 
 import android.content.Intent;
 

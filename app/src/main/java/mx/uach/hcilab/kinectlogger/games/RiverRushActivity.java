@@ -1,8 +1,5 @@
 package mx.uach.hcilab.kinectlogger.games;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
@@ -10,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,24 +15,19 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.R;
+import mx.uach.hcilab.kinectlogger.Therapist;
 import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
+import mx.uach.hcilab.kinectlogger.util.GameLogger;
 
 public class RiverRushActivity extends AppCompatActivity implements
         LevelSelector.OnInputListener, PointsSelector.OnInputListener,
         ConfirmFragment.OnInputListener {
 
-    private ImageButton badJump;
-    private ImageButton inhibitionJump;
-    private ImageButton goodJump;
-    private ImageButton badMiddle;
-    private ImageButton inhibitionMiddle;
-    private ImageButton goodMiddle;
-    private ImageButton badLeft;
-    private ImageButton cloud;
-    private ImageButton badRight;
+    private static final String TAG = "RiverRushActivity";
 
     private boolean isHappy = false;
 
@@ -44,6 +37,13 @@ public class RiverRushActivity extends AppCompatActivity implements
 
     private int selected_level = 1;
     private static final int MAX_LEVEL = 6;
+
+    private GameLogger.RiverRush logger;
+
+    private ImageButton cloud;
+
+    private long cloudTime;
+    private long gameTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,31 +63,36 @@ public class RiverRushActivity extends AppCompatActivity implements
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
 
+        // GameLogger Instance
+        logger = new GameLogger.RiverRush(
+                getIntent().getStringExtra(Therapist.THERAPIST_KEY),
+                getIntent().getStringExtra(Patient.PATIENT_KEY)
+        );
 
+        // CLOUD BUTTON
         cloud = findViewById(R.id.river_rush_cloud);
-
         cloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!isHappy) {
+                    // Change cloud button appearance
                     cloudEvent(R.drawable.ic_happy_cloud, R.color.colorAccent);
-                    // TODO: START CHRONOMETER
+                    // Disable buttons
+                    changeButtonsAvailability();
+                    // Start cloud time
+                    cloudTime = System.nanoTime();
                 } else {
+                    // Change cloud button appearance
                     cloudEvent(R.drawable.ic_sad_cloud, android.R.color.white);
-                    // TODO: STOP CHRONOMETER
-                    // TODO: ADD TIME GOT TO LOG
+                    // Able buttons
+                    changeButtonsAvailability();
+                    // Stop cloud time
+                    cloudTime = System.nanoTime() - cloudTime;
+                    // Log cloud time
+                    logger.LogCloudTime((int) (cloudTime / 1000000000));
                 }
 
                 isHappy = !isHappy;
-            }
-        });
-
-        inhibitionMiddle = findViewById(R.id.river_rush_middle_inhibition);
-
-        inhibitionMiddle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(RiverRushActivity.this, "TAG: " + inhibitionMiddle.getTag().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -113,6 +118,49 @@ public class RiverRushActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * OnClick event for actions
+     * @param v ImageButtons
+     */
+    public void logEvent(View v) {
+        int id = v.getId();
+
+        switch (id) {
+            // JUMP EVENTS
+            case R.id.river_rush_jump_bad:
+                logger.LogJump(GameLogger.RiverRush.State.BAD);
+                break;
+            case R.id.river_rush_jump_inhibition:
+                logger.LogJump(GameLogger.RiverRush.State.INHIBITION);
+                break;
+            case R.id.river_rush_jump_good:
+                logger.LogJump(GameLogger.RiverRush.State.GOOD);
+                break;
+
+            // MIDDLE EVENTS
+            case R.id.river_rush_middle_bad:
+                logger.LogMiddleBar(GameLogger.RiverRush.State.BAD);
+                break;
+            case R.id.river_rush_middle_inhibition:
+                logger.LogMiddleBar(GameLogger.RiverRush.State.INHIBITION);
+                break;
+            case R.id.river_rush_middle_good:
+                logger.LogMiddleBar(GameLogger.RiverRush.State.GOOD);
+                break;
+
+            // LEFT AND RIGHT BAR HIT
+            case R.id.river_rush_left_bar:
+                logger.LogLeftBar();
+                break;
+            case R.id.river_rush_right_bar:
+                logger.LogRightBar();
+                break;
+
+            default:
+                Log.i(TAG, "logEvent: NOT SUPPORTED ACTION");
+        }
+    }
+
     private void cloudEvent(int imageId, @ColorRes int color) {
         cloud.setImageResource(imageId);
         cloud.getBackground().setColorFilter(
@@ -121,9 +169,24 @@ public class RiverRushActivity extends AppCompatActivity implements
                 PorterDuff.Mode.MULTIPLY);
     }
 
+    private void changeButtonsAvailability() {
+        // Array for disabled/able buttons
+        int[] disableButtonsId = {
+                R.id.river_rush_middle_bad, R.id.river_rush_middle_inhibition,
+                R.id.river_rush_middle_good,
+                R.id.river_rush_left_bar, R.id.river_rush_right_bar
+        };
+
+        for (int id : disableButtonsId) {
+            ImageButton button = findViewById(id);
+            button.setEnabled(isHappy);
+        }
+    }
+
+    // FRAGMENTS INTERACTION METHODS
     @Override
-    public void sendSelectedNumber(int number) {
-        selected_level = number;
+    public void sendSelectedLevel(int level) {
+        selected_level = level;
         fragmentIndex++;
         DialogFragment confirmDialog = ConfirmFragment
                 .newInstance(
@@ -136,15 +199,19 @@ public class RiverRushActivity extends AppCompatActivity implements
 
     @Override
     public void sendSelectedPoints(int points) {
+        logger.LogPoints(points);
+        gameTime = System.nanoTime() - gameTime;
+        Toast.makeText(this, "TIEMPO TOTAL DE JUEOG " + gameTime + " SEGUNDOS", Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
     public void confirmPressed() {
-        for(int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
+        for (int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
             fragmentManager.popBackStack();
         }
-        // TODO: START CHRONOMETER
+        logger.LogLevel(selected_level);
+        gameTime = System.nanoTime();
     }
 
     @Override
