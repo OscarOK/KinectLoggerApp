@@ -20,11 +20,11 @@ public class LevelSelector extends DialogFragment {
     private static final String TAG = "LevelSelector";
 
     public interface OnInputListener {
-        void goBack();
-
-        public void sendSelectedNumber(int number);
+        public void sendSelectedLevel(int level);
 
         public void onChoose();
+
+        void goBack();
     }
 
     private OnInputListener onInputListener;
@@ -69,7 +69,7 @@ public class LevelSelector extends DialogFragment {
         builder.setPositiveButton(R.string.fragment_next_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                onInputListener.sendSelectedNumber(numberPicker.getValue());
+                onInputListener.sendSelectedLevel(numberPicker.getValue());
             }
         });
 

@@ -35,7 +35,9 @@ import java.util.HashMap;
 import javax.annotation.Nullable;
 
 import mx.uach.hcilab.kinectlogger.adapter.FireStoreAdapter;
+import mx.uach.hcilab.kinectlogger.games.RiverRushActivity;
 import mx.uach.hcilab.kinectlogger.util.FirestoreHelper;
+import mx.uach.hcilab.kinectlogger.util.GameLogger;
 import mx.uach.hcilab.kinectlogger.util.RecyclerTouchListener;
 import mx.uach.hcilab.kinectlogger.util.SelectorItemTransformer;
 import mx.uach.hcilab.kinectlogger.util.StorageHelper;

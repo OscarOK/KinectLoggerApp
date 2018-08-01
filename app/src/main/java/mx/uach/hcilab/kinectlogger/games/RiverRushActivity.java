@@ -22,6 +22,7 @@ import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
 import mx.uach.hcilab.kinectlogger.util.GameLogger;
+import mx.uach.hcilab.kinectlogger.util.SoundPlayerHelper;
 
 public class RiverRushActivity extends AppCompatActivity implements
         LevelSelector.OnInputListener, PointsSelector.OnInputListener,
@@ -125,6 +126,8 @@ public class RiverRushActivity extends AppCompatActivity implements
     public void logEvent(View v) {
         int id = v.getId();
 
+        SoundPlayerHelper.playButtonSound(RiverRushActivity.this);
+
         switch (id) {
             // JUMP EVENTS
             case R.id.river_rush_jump_bad:
@@ -201,7 +204,7 @@ public class RiverRushActivity extends AppCompatActivity implements
     public void sendSelectedPoints(int points) {
         logger.LogPoints(points);
         gameTime = System.nanoTime() - gameTime;
-        Toast.makeText(this, "TIEMPO TOTAL DE JUEOG " + gameTime + " SEGUNDOS", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "TIEMPO TOTAL DE JUEGO " + (gameTime / 1000000000) + " SEGUNDOS", Toast.LENGTH_SHORT).show();
         finish();
     }
 

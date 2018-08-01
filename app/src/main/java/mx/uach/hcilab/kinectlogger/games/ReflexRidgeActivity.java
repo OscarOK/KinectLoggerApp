@@ -184,8 +184,8 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void sendSelectedNumber(int number) {
-        selected_level = number;
+    public void sendSelectedLevel(int level) {
+        selected_level = level;
         fragmentIndex++;
         if (fragmentIndex == 0) {
             fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
@@ -197,8 +197,8 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void sendSelectedTime(int time) {
-        general_time = time;
+    public void sendSelectedTime(int generalTime) {
+        general_time = generalTime;
         fragmentIndex++;
 
         DialogFragment confirmDialog = ConfirmFragment

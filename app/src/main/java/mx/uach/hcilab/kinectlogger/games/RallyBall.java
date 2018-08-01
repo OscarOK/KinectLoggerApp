@@ -184,11 +184,11 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
     }
 
     @Override
-    public void sendSelectedNumber(int number) {
+    public void sendSelectedLevel(int level) {
        /* selected_level = number;
         fragment.show(fragmentManager, "fragment_");
         fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();*/
-        selected_level = number;
+        selected_level = level;
 
 
         String message = getResources().getString(R.string.confirmation_message_no_time, selected_level);

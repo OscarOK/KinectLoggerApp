@@ -24,7 +24,7 @@ public class GeneralTimeSelector extends DialogFragment {
     private static final String TAG = "GeneralTimeSelector";
 
     public interface OnInputListener {
-        public void sendSelectedTime(int time);
+        public void sendSelectedTime(int generalTime);
         public void goBack();
         public void onChoose();
     }
