@@ -1,19 +1,25 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,11 +30,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import java.security.Permission;
+import java.util.Calendar;
 import java.util.Date;
 
+import mx.uach.hcilab.kinectlogger.fragments.DatePickerFragment;
 import mx.uach.hcilab.kinectlogger.util.*;
 
-public class PatientManagerActivity extends AppCompatActivity {
+public class PatientManagerActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
     static final int REQUEST_IMAGE_CAPTURE = 1;
     CameraIntentHelper mCameraIntentHelper;
     PermissionsHelper mPermissionHelper;
@@ -44,8 +52,17 @@ public class PatientManagerActivity extends AppCompatActivity {
 
     @BindView(R.id.text_patient_name)
     EditText nameEditText;
-    @BindView(R.id.text_patient_lastname) EditText paternalEditText;
-    @BindView(R.id.text_patient_lastname_2) EditText maternalEditText;
+    @BindView(R.id.text_patient_lastname)
+    EditText paternalEditText;
+    @BindView(R.id.text_patient_lastname_2)
+    EditText maternalEditText;
+    @BindView(R.id.button_birthdate)
+    Button mBirthdaButton;
+    @BindView(R.id.text_birthday)
+    TextInputEditText mBirthdayText;
+
+    private Calendar mPatientBirthday;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +70,7 @@ public class PatientManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_patients_manager);
         ButterKnife.bind(this);
         setTitle(getString(R.string.patient_manager_activity_title));
+        if(getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mPermissionHelper = new PermissionsHelper(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
 
         mPermissionHelper.request(new PermissionsHelper.PermissionCallback() {
@@ -86,20 +104,30 @@ public class PatientManagerActivity extends AppCompatActivity {
             mPermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+    @OnClick(R.id.button_birthdate)
+    protected void clickedBirthdateButton(){
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getFragmentManager(), "datePicker");
+    }
+
 
     @OnClick(R.id.button_save)
     protected void clickedSaveButton(){
         if(nameEditText.getText().toString().isEmpty() ||
                 paternalEditText.getText().toString().isEmpty() ||
                 maternalEditText.getText().toString().isEmpty() ||
+                mPatientBirthday == null ||
                 photoPath == null){
             Toast.makeText(getApplicationContext(), R.string.warning_fields_incomplete, Toast.LENGTH_SHORT).show();
             return;
         }
-
+        String birthdayString = String.valueOf(mPatientBirthday.get(Calendar.YEAR))+"-"+
+                                String.valueOf(mPatientBirthday.get(Calendar.MONTH))+"-"+
+                                String.valueOf(mPatientBirthday.get(Calendar.DATE));
         Patient patient = new Patient(nameEditText.getText().toString(),
                 paternalEditText.getText().toString(),
                 maternalEditText.getText().toString(),
+                birthdayString,
                 photoPath);
         FirestoreHelper.uploadPatient(patient);
         finish();
@@ -187,5 +215,22 @@ public class PatientManagerActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         mCameraIntentHelper.onActivityResult(requestCode, resultCode, intent);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        mPatientBirthday = Calendar.getInstance();
+        mPatientBirthday.set(year,month,day);
+        mBirthdayText.setText(String.valueOf(day)+"-"+String.valueOf(month+1)+"-"+String.valueOf(year));
     }
 }
