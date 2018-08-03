@@ -45,6 +45,7 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolderGa
 
     public class ViewHolderGames extends RecyclerView.ViewHolder {
 
+
         private final Context context;
         private ImageView thumbnail;
         private TextView gameTitle;

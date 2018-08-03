@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:numpad="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:numpad="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="16dp"
     tools:context=".games.ReflexRidgeActivity">
@@ -12,7 +12,7 @@
     <FrameLayout
         android:id="@+id/reflex_ridge_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_actions"
@@ -32,6 +32,7 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:onClick="logEvent"
                 android:padding="16dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_jump"
@@ -47,6 +48,7 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:onClick="logEvent"
                 android:padding="16dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_right"
@@ -61,6 +63,7 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:onClick="logEvent"
                 android:padding="16dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_left"
@@ -76,6 +79,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
+                android:onClick="logEvent"
                 android:padding="16dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_squad"
@@ -96,6 +100,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:onClick="logEvent"
                 android:padding="16dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_boost"
