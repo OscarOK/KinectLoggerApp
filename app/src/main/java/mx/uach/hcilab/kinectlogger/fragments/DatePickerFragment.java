@@ -10,10 +10,22 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 
-public class DatePickerFragment extends DialogFragment  {
-    private DatePickerDialog.OnDateSetListener mListener;
-    private static final short PATIENT_AGE = 10;
+public class DatePickerFragment extends DialogFragment {
+
+    private DatePickerDialog.OnDateSetListener listener;
+
+    public static DatePickerFragment newInstance(DatePickerDialog.OnDateSetListener listener) {
+        DatePickerFragment fragment = new DatePickerFragment();
+        fragment.setListener(listener);
+        return fragment;
+    }
+
+    public void setListener(DatePickerDialog.OnDateSetListener listener) {
+        this.listener = listener;
+    }
+
     @Override
+    //@NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
         final Calendar c = Calendar.getInstance();
@@ -22,26 +34,7 @@ public class DatePickerFragment extends DialogFragment  {
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), mListener, year-PATIENT_AGE, month, day);
+        return new DatePickerDialog(getActivity(), listener, year, month, day);
     }
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (!(context instanceof DatePickerDialog.OnDateSetListener)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
-
-        mListener = (DatePickerDialog.OnDateSetListener) getActivity();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mListener = null;
-    }
-
-
 
 }

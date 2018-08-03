@@ -62,6 +62,7 @@ public class PatientManagerActivity extends AppCompatActivity implements DatePic
     TextInputEditText mBirthdayText;
 
     private Calendar mPatientBirthday;
+    private DialogFragment mdatePickerFragment;
 
 
     @Override
@@ -96,6 +97,7 @@ public class PatientManagerActivity extends AppCompatActivity implements DatePic
             }
         });
         setupCameraIntentHelper();
+        mdatePickerFragment = new DatePickerFragment();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -106,7 +108,18 @@ public class PatientManagerActivity extends AppCompatActivity implements DatePic
     }
     @OnClick(R.id.button_birthdate)
     protected void clickedBirthdateButton(){
-        DialogFragment newFragment = new DatePickerFragment();
+
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                mPatientBirthday = Calendar.getInstance();
+                mPatientBirthday.set(year,month+1,day);
+                mBirthdayText.setText(String.valueOf(day)+"-"+String.valueOf(month+1)+"-"+String.valueOf(year));
+                // +1 because january is zero
+                final String selectedDate = day + " / " + (month+1) + " / " + year;
+                mBirthdayText.setText(selectedDate);
+            }
+        });
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
@@ -229,8 +242,6 @@ public class PatientManagerActivity extends AppCompatActivity implements DatePic
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        mPatientBirthday = Calendar.getInstance();
-        mPatientBirthday.set(year,month,day);
-        mBirthdayText.setText(String.valueOf(day)+"-"+String.valueOf(month+1)+"-"+String.valueOf(year));
+
     }
 }
