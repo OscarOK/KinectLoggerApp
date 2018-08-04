@@ -172,8 +172,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
 
         if (id == android.R.id.home) {
             finish();
+        } else if (id == R.id.action_finish_reflex_ridge) {
+            finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 

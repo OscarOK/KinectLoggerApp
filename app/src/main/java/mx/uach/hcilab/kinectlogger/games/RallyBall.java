@@ -168,6 +168,8 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
 
         if (id == android.R.id.home) {
             finish();
+        } else if (id == R.id.action_finish_reflex_ridge) {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
