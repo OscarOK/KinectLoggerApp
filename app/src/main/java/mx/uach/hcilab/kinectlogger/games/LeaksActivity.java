@@ -166,6 +166,16 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         menuInflater.inflate(R.menu.games_menu, menu);
         return true;
     }
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onChoose() {
@@ -214,5 +224,6 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         dialogFragment.setCanceledOnTouchOutside(false);
         dialogFragment.show();
     }
+
 
 }

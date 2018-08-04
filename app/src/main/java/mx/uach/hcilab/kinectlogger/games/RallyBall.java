@@ -162,15 +162,19 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         menuInflater.inflate(R.menu.games_menu, menu);
         return true;
     }
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onChoose() {
-       /* levelFragment.setClickable(false);
-        levelFragment.setFocusable(false);
-        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
-        transaction.remove(fragment);
-        transaction.commit();*/
        finish();
     }
 
@@ -183,9 +187,6 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
 
     @Override
     public void sendSelectedLevel(int level) {
-       /* selected_level = number;
-        fragment.show(fragmentManager, "fragment_");
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();*/
         selected_level = level;
 
 
