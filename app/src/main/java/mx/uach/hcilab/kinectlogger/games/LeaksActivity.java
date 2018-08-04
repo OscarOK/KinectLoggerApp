@@ -1,5 +1,11 @@
 package mx.uach.hcilab.kinectlogger.games;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,18 +16,27 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import mx.uach.hcilab.kinectlogger.LevelSelectorFragment;
+import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.R;
+import mx.uach.hcilab.kinectlogger.Therapist;
+import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
+import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
+import mx.uach.hcilab.kinectlogger.util.GameLogger;
 
-public class LeaksActivity extends AppCompatActivity implements LevelSelectorFragment.OnFragmentInteractionListener {
+public class LeaksActivity extends AppCompatActivity implements LevelSelector.OnInputListener {
 
-    ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
+    ImageButton cabeza, torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton;
-    int contador=0;
+    private long gameTime;
+    private GameLogger.Leaks logger;
+    int contador = 0, selected_level;
     ImageView vista;
     FrameLayout levelFragment;
-    LevelSelectorFragment fragment;
+
+    FragmentManager fragmentManager;
+    LevelSelector fragment;
 
 
     @Override
@@ -29,9 +44,14 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaks);
 
-        getSupportActionBar().setTitle("20,000 leaks"); // for set actionbar title
+        logger = new GameLogger.Leaks(
+                getIntent().getStringExtra(Therapist.THERAPIST_KEY),
+                getIntent().getStringExtra(Patient.PATIENT_KEY)
+        );
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         cabeza = (ImageButton) findViewById(R.id.cabeza);
         torzo = (ImageButton) findViewById(R.id.torzo);
@@ -43,21 +63,20 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
         vista = (ImageView) findViewById(R.id.imageView);
         levelFragment = (FrameLayout) findViewById(R.id.fragmentContainer);
 
-        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
-        fragment= new LevelSelectorFragment();
-        transaction.add(R.id.fragmentContainer, fragment);
-        transaction.commit();
+        fragment = new LevelSelector();
+        fragmentManager = getSupportFragmentManager();
+        fragment.show(fragmentManager, "fragment_");
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();
 
 
         cabeza.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    cabeza.setImageDrawable(getDrawable(R.drawable.ic_cabezav));
+                    cabeza.setImageDrawable(getResources().getDrawable(R.drawable.ic_cabezav));
                 }
                 else{
-                    cabeza.setImageDrawable(getDrawable(R.drawable.ic_cabeza));
+                    cabeza.setImageDrawable(getResources().getDrawable(R.drawable.ic_cabeza));
                 }
                 return false;
             }
@@ -66,10 +85,10 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    torzo.setImageDrawable(getDrawable(R.drawable.ic_torzov));
+                    torzo.setImageDrawable(getResources().getDrawable(R.drawable.ic_torzov));
                 }
                 else{
-                    torzo.setImageDrawable(getDrawable(R.drawable.ic_torzo));
+                    torzo.setImageDrawable(getResources().getDrawable(R.drawable.ic_torzo));
                 }
                 return false;
             }
@@ -78,10 +97,10 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    bderecho.setImageDrawable(getDrawable(R.drawable.ic_bderechov));
+                    bderecho.setImageDrawable(getResources().getDrawable(R.drawable.ic_bderechov));
                 }
                 else{
-                    bderecho.setImageDrawable(getDrawable(R.drawable.ic_derecho));
+                    bderecho.setImageDrawable(getResources().getDrawable(R.drawable.ic_derecho));
                 }
                 return false;
             }
@@ -90,10 +109,10 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    bizquierdo.setImageDrawable(getDrawable(R.drawable.ic_bizquierdov));
+                    bizquierdo.setImageDrawable(getResources().getDrawable(R.drawable.ic_bizquierdov));
                 }
                 else{
-                    bizquierdo.setImageDrawable(getDrawable(R.drawable.ic_izquierdo));
+                    bizquierdo.setImageDrawable(getResources().getDrawable(R.drawable.ic_izquierdo));
                 }
                 return false;
             }
@@ -102,10 +121,10 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    pderecha.setImageDrawable(getDrawable(R.drawable.ic_pderechav));
+                    pderecha.setImageDrawable(getResources().getDrawable(R.drawable.ic_pderechav));
                 }
                 else{
-                    pderecha.setImageDrawable(getDrawable(R.drawable.ic_pderecha));
+                    pderecha.setImageDrawable(getResources().getDrawable(R.drawable.ic_pderecha));
                 }
                 return false;
             }
@@ -114,10 +133,10 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
-                    pizquierda.setImageDrawable(getDrawable(R.drawable.ic_pizquierdav));
+                    pizquierda.setImageDrawable(getResources().getDrawable(R.drawable.ic_pizquierdav));
                 }
                 else{
-                    pizquierda.setImageDrawable(getDrawable(R.drawable.ic_pizquierda));
+                    pizquierda.setImageDrawable(getResources().getDrawable(R.drawable.ic_pizquierda));
                 }
                 return false;
             }
@@ -128,11 +147,11 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
                 contador++;
                 switch (contador){
                     case 1:
-                        vista.setImageDrawable(getDrawable(R.drawable.ic_oleada2));
+                        vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada2));
                         break;
 
                     case 2:
-                        vista.setImageDrawable(getDrawable(R.drawable.ic_oleada3));
+                        vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada3));
                         break;
 
                     case 3 : finish();
@@ -141,6 +160,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
         });
     }
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.games_menu, menu);
@@ -148,12 +168,51 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelectorFra
     }
 
     @Override
-    public void onClickSelection() {
-        levelFragment.setClickable(false);
-        levelFragment.setFocusable(false);
-        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
-        transaction.remove(fragment);
-        transaction.commit();
+    public void onChoose() {
+        finish();
     }
+
+    @Override
+    public void goBack() {
+        fragmentManager.popBackStack("fragment_", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragment.show(fragmentManager, "fragment_");
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();
+    }
+
+
+    @Override
+    public void sendSelectedLevel(int level) {
+        selected_level = level;
+        String message = getResources().getString(R.string.confirmation_message_no_time, selected_level);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LeaksActivity.this);
+        builder.setTitle(R.string.confirmation_title);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.fragment_start_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                for (int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
+                    fragmentManager.popBackStack();
+                }
+                // TODO: START CHRONOMETER
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.fragment_back_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                goBack();
+            }
+        });
+        builder.setNeutralButton(R.string.fragment_cancel_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                onChoose();
+            }
+        });
+        Dialog dialogFragment = builder.create();
+        dialogFragment.setCanceledOnTouchOutside(false);
+        dialogFragment.show();
+    }
+
 }

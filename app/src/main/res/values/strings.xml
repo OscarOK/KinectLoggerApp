@@ -51,6 +51,7 @@
     <string name="fragment_cancel_button">Cancelar</string>
     <string name="fragment_start_button">Empezar</string>
     <string name="fragment_finish_button">Terminar</string>
+    <string name="finish_round">Finalizar Ronda</string>
 
     <string name="button_play">Jugar</string>
     <string name="text_view_title_dummy">Titulo</string>

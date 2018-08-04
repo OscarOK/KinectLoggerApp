@@ -36,9 +36,9 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rally_ball);
 
-        getSupportActionBar().setTitle("Rally Ball"); // for set actionbar title
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         cabeza = (ImageButton) findViewById(R.id.cabeza);
         torzo = (ImageButton) findViewById(R.id.torzo);
@@ -51,11 +51,8 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         vista = (ImageView) findViewById(R.id.imageView);
         levelFragment = (FrameLayout) findViewById(R.id.fragmentContainer);
 
-     //   android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-      //  android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
+
         fragment= new LevelSelector();
-       // transaction.add(R.id.fragmentContainer, fragment);
-     //   transaction.commit();
         fragmentManager = getSupportFragmentManager();
         fragment.show(fragmentManager, "fragment_");
         fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();
@@ -159,6 +156,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         });
     }
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.games_menu, menu);
