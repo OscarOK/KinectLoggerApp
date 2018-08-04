@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import mx.uach.hcilab.kinectlogger.Patient;
@@ -38,9 +37,6 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     private boolean inhibitionFlag = false;
     private boolean badFlag = false;
-
-    private Button buttonBad;
-    private Button buttonInhibition;
 
     private FragmentManager fragmentManager;
     private DialogFragment[] fragments = new DialogFragment[3];
@@ -74,15 +70,10 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
 
-        // Init state buttons
-        buttonBad = findViewById(R.id.button_bad);
-        buttonInhibition = findViewById(R.id.button_inhibition);
-
         generalTimeHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-                fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+                endSession();
             }
         };
 
@@ -97,38 +88,6 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
                 getIntent().getStringExtra(Therapist.THERAPIST_KEY),
                 getIntent().getStringExtra(Patient.PATIENT_KEY)
         );
-
-        buttonBad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stateHandler.removeCallbacksAndMessages(null);
-
-                if (inhibitionFlag) {
-                    inhibitionFlag = false;
-                }
-
-                stateHandler.sendEmptyMessageDelayed(0, RESPONSE_DELAY);
-
-                badFlag = true;
-                coloringButtons(R.color.colorBadRed);
-            }
-        });
-
-        buttonInhibition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stateHandler.removeCallbacksAndMessages(null);
-
-                if (badFlag) {
-                    badFlag = false;
-                }
-
-                stateHandler.sendEmptyMessageDelayed(1, RESPONSE_DELAY);
-
-                inhibitionFlag = true;
-                coloringButtons(R.color.colorInhibitionYellow);
-            }
-        });
     }
 
     @Override
@@ -145,11 +104,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-            fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
-            gameTime = System.nanoTime() - gameTime;
-            gameTime /= 1000000000;
-            logger.LogExtraTime((int) (generalTime - gameTime));
+            endSession();
         }
 
         return super.onOptionsItemSelected(item);
@@ -201,15 +156,61 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         }
     }
 
-    private void coloringButtons(@ColorRes int id) {
-        int[] imageButtons = {};
+    public void statusEvent(View v) {
+        int id = v.getId();
+
+        SoundPlayerHelper.playButtonSound(ReflexRidgeActivity.this);
+
+        switch (id) {
+            case R.id.button_bad:
+                badFlag = true;
+                applyStatus(inhibitionFlag, R.color.colorBadRed);
+                break;
+            case R.id.button_inhibition:
+                inhibitionFlag = true;
+                applyStatus(badFlag, R.color.colorInhibitionYellow);
+                break;
+            default:
+                Log.i(TAG, "statusEvent: NOT SUPPORTED ACTION");
+        }
+    }
+
+    private void endSession() {
+        generalTimeHandler.removeCallbacksAndMessages(null);
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+        gameTime = System.nanoTime() - gameTime;
+        gameTime /= 1000000000;
+        logger.LogExtraTime((int) (generalTime - gameTime));
+    }
+
+    private void coloringButtons(@ColorRes int color) {
+        int[] imageButtons = {
+                R.id.button_jump,
+                R.id.button_left, R.id.button_boost, R.id.button_right,
+                R.id.button_squad
+        };
         // THANKS TO SOJIN (https://stackoverflow.com/users/388889/sojin)
         // https://stackoverflow.com/questions/13842447/android-set-button-background-programmatically
-        ImageButton imageButton = new ImageButton(this);
+        for (int id : imageButtons) {
+            ImageButton imageButton = findViewById(id);
             imageButton.getBackground().setColorFilter(
                     ContextCompat.getColor(
-                            ReflexRidgeActivity.this, id),
+                            ReflexRidgeActivity.this, color),
                     PorterDuff.Mode.MULTIPLY);
+        }
+    }
+
+    private void applyStatus(boolean otherFlag, @ColorRes int color) {
+        stateHandler.removeCallbacksAndMessages(null);
+
+        if (otherFlag) {
+            otherFlag = false;
+        }
+
+        stateHandler.sendEmptyMessageDelayed(0, RESPONSE_DELAY);
+
+        coloringButtons(color);
     }
 
     @Override
