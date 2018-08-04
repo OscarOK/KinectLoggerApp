@@ -30,18 +30,16 @@ public class RiverRushActivity extends AppCompatActivity implements
 
     private static final String TAG = "RiverRushActivity";
 
+    private static final int MAX_LEVEL = 6;
+    private int selected_level = 1;
+
     private boolean isHappy = false;
 
     private FragmentManager fragmentManager;
     private DialogFragment[] fragments = new DialogFragment[2];
     private int fragmentIndex = 0;
 
-    private int selected_level = 1;
-    private static final int MAX_LEVEL = 6;
-
     private GameLogger.RiverRush logger;
-
-    private ImageButton cloud;
 
     private long cloudTime;
     private long gameTime;
@@ -69,33 +67,6 @@ public class RiverRushActivity extends AppCompatActivity implements
                 getIntent().getStringExtra(Therapist.THERAPIST_KEY),
                 getIntent().getStringExtra(Patient.PATIENT_KEY)
         );
-
-        // CLOUD BUTTON
-        cloud = findViewById(R.id.river_rush_cloud);
-        cloud.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isHappy) {
-                    // Change cloud button appearance
-                    cloudEvent(R.drawable.ic_happy_cloud, R.color.colorAccent);
-                    // Disable buttons
-                    changeButtonsAvailability();
-                    // Start cloud time
-                    cloudTime = System.nanoTime();
-                } else {
-                    // Change cloud button appearance
-                    cloudEvent(R.drawable.ic_sad_cloud, android.R.color.white);
-                    // Able buttons
-                    changeButtonsAvailability();
-                    // Stop cloud time
-                    cloudTime = System.nanoTime() - cloudTime;
-                    // Log cloud time
-                    logger.LogCloudTime((int) (cloudTime / 1000000000));
-                }
-
-                isHappy = !isHappy;
-            }
-        });
     }
 
     @Override
@@ -114,6 +85,7 @@ public class RiverRushActivity extends AppCompatActivity implements
         } else if (id == R.id.action_finish_reflex_ridge) {
             fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
             fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+            cloudClick(new ImageButton(this).findViewById(R.id.river_rush_cloud));
         }
 
         return super.onOptionsItemSelected(item);
@@ -164,9 +136,33 @@ public class RiverRushActivity extends AppCompatActivity implements
         }
     }
 
+    public void cloudClick(View v) {
+        if (!isHappy) {
+            // Change cloud button appearance
+            cloudEvent(R.drawable.ic_happy_cloud, R.color.colorAccent);
+            // Disable buttons
+            changeButtonsAvailability();
+            // Start cloud time
+            cloudTime = System.nanoTime();
+        } else {
+            // Change cloud button appearance
+            cloudEvent(R.drawable.ic_sad_cloud, android.R.color.white);
+            // Able buttons
+            changeButtonsAvailability();
+            // Stop cloud time
+            cloudTime = System.nanoTime() - cloudTime;
+            // Log cloud time
+            logger.LogCloudTime((int) (cloudTime / 1000000000));
+        }
+
+        isHappy = !isHappy;
+    }
+
     private void cloudEvent(int imageId, @ColorRes int color) {
-        cloud.setImageResource(imageId);
-        cloud.getBackground().setColorFilter(
+        ImageButton button = findViewById(R.id.river_rush_cloud);
+
+        button.setImageResource(imageId);
+        button.getBackground().setColorFilter(
                 ContextCompat.getColor(
                         RiverRushActivity.this, color),
                 PorterDuff.Mode.MULTIPLY);

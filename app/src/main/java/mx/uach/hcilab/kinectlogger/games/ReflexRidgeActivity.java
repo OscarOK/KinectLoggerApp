@@ -1,9 +1,5 @@
 package mx.uach.hcilab.kinectlogger.games;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,15 +14,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
+import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.R;
+import mx.uach.hcilab.kinectlogger.Therapist;
 import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
 import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
+import mx.uach.hcilab.kinectlogger.util.GameLogger;
+import mx.uach.hcilab.kinectlogger.util.GameLogger.ReflexRidge.State;
+import mx.uach.hcilab.kinectlogger.util.SoundPlayerHelper;
 
 public class ReflexRidgeActivity extends AppCompatActivity implements
         LevelSelector.OnInputListener, GeneralTimeSelector.OnInputListener,
@@ -34,21 +33,23 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     private static final long RESPONSE_DELAY = 1000;
 
+    private static final String TAG = "ReflexRidgeActivity";
+
     private boolean inhibitionFlag = false;
     private boolean badFlag = false;
-
-    private Button buttonBad;
-    private Button buttonInhibition;
-
-    private ImageButton imageButtons[] = new ImageButton[5];
 
     private FragmentManager fragmentManager;
     private DialogFragment[] fragments = new DialogFragment[3];
     private int fragmentIndex = 0;
 
     private static final int MAX_LEVEL = 9;
-    private int selected_level = 1;
-    private int general_time;
+    private int levelSelected = 1;
+    private int generalTime;
+
+    private Handler generalTimeHandler;
+    private Handler stateHandler;
+    private GameLogger.ReflexRidge logger;
+    private long gameTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         }
 
         // Fragments stuff
-        fragments[0] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+        fragments[0] = LevelSelector.newInstance(MAX_LEVEL, levelSelected);
         fragments[1] = GeneralTimeSelector.newInstance("0");
         fragments[2] = new PointsSelector();
 
@@ -69,80 +70,24 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
 
-
-        // Init actions buttons
-        imageButtons[0] = findViewById(R.id.button_jump);
-        imageButtons[1] = findViewById(R.id.button_right);
-        imageButtons[2] = findViewById(R.id.button_squad);
-        imageButtons[3] = findViewById(R.id.button_left);
-        imageButtons[4] = findViewById(R.id.button_boost);
-
-        // Init state buttons
-        buttonBad = findViewById(R.id.button_bad);
-        buttonInhibition = findViewById(R.id.button_inhibition);
-
-        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
+        generalTimeHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                flagsDown();
-                Log.e("DELAY ", "APPLIED");
+                endSession();
             }
         };
 
-        buttonBad.setOnClickListener(new View.OnClickListener() {
+        stateHandler = new Handler() {
             @Override
-            public void onClick(View view) {
-                handler.removeCallbacksAndMessages(null);
-
-                if (inhibitionFlag) {
-                    inhibitionFlag = false;
-                }
-
-                handler.sendEmptyMessageDelayed(0, RESPONSE_DELAY);
-
-                badFlag = true;
-                coloringButtons(R.color.colorBadRed);
+            public void handleMessage(Message msg) {
+                flagsDown();
             }
-        });
+        };
 
-        buttonInhibition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handler.removeCallbacksAndMessages(null);
-
-                if (badFlag) {
-                    badFlag = false;
-                }
-
-                handler.sendEmptyMessageDelayed(1, RESPONSE_DELAY);
-
-                inhibitionFlag = true;
-                coloringButtons(R.color.colorInhibitionYellow);
-            }
-        });
-
-        for (int i = 0; i < imageButtons.length; i++) {
-            final int finalI = i;
-            imageButtons[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    handler.removeCallbacksAndMessages(null);
-                    Log.i("ImageButton Action", String.valueOf(finalI));
-
-                    if (badFlag) {
-                        Log.i("ImageButton Status", "BAD");
-                    } else if (inhibitionFlag) {
-                        Log.i("ImageButton Status", "INHIBITION");
-                    } else {
-                        Log.i("ImageButton Status", "GOOD");
-                    }
-
-                    if (!badFlag || !inhibitionFlag) {
-                        flagsDown();
-                    }
-                }
-            });
-        }
+        logger = new GameLogger.ReflexRidge(
+                getIntent().getStringExtra(Therapist.THERAPIST_KEY),
+                getIntent().getStringExtra(Patient.PATIENT_KEY)
+        );
     }
 
     @Override
@@ -159,8 +104,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-            fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+            endSession();
         }
 
         return super.onOptionsItemSelected(item);
@@ -172,25 +116,111 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         coloringButtons(R.color.colorGoodGreen);
     }
 
-    private void coloringButtons(@ColorRes int id) {
+    public void logEvent(View v) {
+        int id = v.getId();
+
+        SoundPlayerHelper.playButtonSound(ReflexRidgeActivity.this);
+
+        stateHandler.removeCallbacksAndMessages(null);
+
+        State state = State.GOOD;
+
+        if (badFlag) {
+            state = State.BAD;
+        } else if (inhibitionFlag) {
+            state = State.INHIBITION;
+        }
+
+        switch (id) {
+            case R.id.button_jump:
+                logger.LogJump(state);
+                break;
+            case R.id.button_left:
+                logger.LogLeft(state);
+                break;
+            case R.id.button_boost:
+                logger.LogBoost(state);
+                break;
+            case R.id.button_right:
+                logger.LogRight(state);
+                break;
+            case R.id.button_squad:
+                logger.LogSquat(state);
+                break;
+            default:
+                Log.i(TAG, "logEvent: NOT SUPPORTED ACTION");
+        }
+
+        if (!badFlag || !inhibitionFlag) {
+            flagsDown();
+        }
+    }
+
+    public void statusEvent(View v) {
+        int id = v.getId();
+
+        SoundPlayerHelper.playButtonSound(ReflexRidgeActivity.this);
+
+        switch (id) {
+            case R.id.button_bad:
+                badFlag = true;
+                applyStatus(inhibitionFlag, R.color.colorBadRed);
+                break;
+            case R.id.button_inhibition:
+                inhibitionFlag = true;
+                applyStatus(badFlag, R.color.colorInhibitionYellow);
+                break;
+            default:
+                Log.i(TAG, "statusEvent: NOT SUPPORTED ACTION");
+        }
+    }
+
+    private void endSession() {
+        generalTimeHandler.removeCallbacksAndMessages(null);
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+        gameTime = System.nanoTime() - gameTime;
+        gameTime /= 1000000000;
+        logger.LogExtraTime((int) (generalTime - gameTime));
+    }
+
+    private void coloringButtons(@ColorRes int color) {
+        int[] imageButtons = {
+                R.id.button_jump,
+                R.id.button_left, R.id.button_boost, R.id.button_right,
+                R.id.button_squad
+        };
         // THANKS TO SOJIN (https://stackoverflow.com/users/388889/sojin)
         // https://stackoverflow.com/questions/13842447/android-set-button-background-programmatically
-        for (ImageButton imageButton : imageButtons) {
+        for (int id : imageButtons) {
+            ImageButton imageButton = findViewById(id);
             imageButton.getBackground().setColorFilter(
                     ContextCompat.getColor(
-                            ReflexRidgeActivity.this, id),
+                            ReflexRidgeActivity.this, color),
                     PorterDuff.Mode.MULTIPLY);
         }
     }
 
+    private void applyStatus(boolean otherFlag, @ColorRes int color) {
+        stateHandler.removeCallbacksAndMessages(null);
+
+        if (otherFlag) {
+            otherFlag = false;
+        }
+
+        stateHandler.sendEmptyMessageDelayed(0, RESPONSE_DELAY);
+
+        coloringButtons(color);
+    }
+
     @Override
     public void sendSelectedLevel(int level) {
-        selected_level = level;
+        levelSelected = level;
         fragmentIndex++;
         if (fragmentIndex == 0) {
-            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, levelSelected);
         } else if (fragmentIndex == 1) {
-            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(general_time));
+            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(generalTime));
         }
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
@@ -198,13 +228,13 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     @Override
     public void sendSelectedTime(int generalTime) {
-        general_time = generalTime;
+        this.generalTime = generalTime;
         fragmentIndex++;
 
         DialogFragment confirmDialog = ConfirmFragment
                 .newInstance(
                         getResources().getString(
-                                R.string.confirmation_message, selected_level, general_time
+                                R.string.confirmation_message, levelSelected, this.generalTime
                         ));
 
         confirmDialog.show(fragmentManager, "confirmation");
@@ -212,16 +242,27 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     @Override
     public void sendSelectedPoints(int points) {
-        Toast.makeText(this, String.valueOf(points), Toast.LENGTH_SHORT).show();
+        logger.LogPoints(points);
         finish();
     }
 
     @Override
     public void confirmPressed() {
-        for(int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
+        for (int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
             fragmentManager.popBackStack();
         }
-        // TODO: START CHRONOMETER
+
+        generalTimeHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+                fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+            }
+        };
+        gameTime = System.nanoTime();
+        generalTimeHandler.sendEmptyMessageDelayed(1, generalTime * 1000);
+        logger.LogLevel(levelSelected);
+        logger.LogGeneralTime(generalTime);
     }
 
     @Override
@@ -229,9 +270,9 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         fragmentIndex--;
         fragmentManager.popBackStack("fragment_" + fragmentIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         if (fragmentIndex == 0) {
-            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, levelSelected);
         } else if (fragmentIndex == 1) {
-            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(general_time));
+            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(generalTime));
         }
         fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();

@@ -30,9 +30,6 @@ public class GameSelectorActivity extends AppCompatActivity {
 
         if(getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String therapistKey1 = getIntent().getStringExtra(Therapist.THERAPIST_KEY);
-        String patientKey1 = getIntent().getStringExtra(Patient.PATIENT_KEY);
-
         recyclerViewGames = findViewById(R.id.game_selector_recycle_view);
         recyclerViewGames.setLayoutManager(
                 new LinearLayoutManager(this,
