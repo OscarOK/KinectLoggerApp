@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.R;
@@ -81,11 +80,9 @@ public class RiverRushActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            finish();
+            endSession();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-            fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
-            cloudClick(new ImageButton(this).findViewById(R.id.river_rush_cloud));
+            endSession();
         }
 
         return super.onOptionsItemSelected(item);
@@ -199,8 +196,6 @@ public class RiverRushActivity extends AppCompatActivity implements
     @Override
     public void sendSelectedPoints(int points) {
         logger.LogPoints(points);
-        gameTime = System.nanoTime() - gameTime;
-        Toast.makeText(this, "TIEMPO TOTAL DE JUEGO " + (gameTime / 1000000000) + " SEGUNDOS", Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -211,6 +206,15 @@ public class RiverRushActivity extends AppCompatActivity implements
         }
         logger.LogLevel(selected_level);
         gameTime = System.nanoTime();
+    }
+
+    private void endSession() {
+        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
+        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+        gameTime = System.nanoTime() - gameTime;
+        if (isHappy) {
+            cloudClick(new ImageButton(this).findViewById(R.id.river_rush_cloud));
+        }
     }
 
     @Override

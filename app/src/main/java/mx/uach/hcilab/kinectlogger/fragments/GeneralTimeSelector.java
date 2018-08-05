@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fxn769.Numpad;
 import com.fxn769.TextGetListner;
@@ -25,7 +26,9 @@ public class GeneralTimeSelector extends DialogFragment {
 
     public interface OnInputListener {
         public void sendSelectedTime(int generalTime);
+
         public void goBack();
+
         public void onChoose();
     }
 
@@ -61,10 +64,6 @@ public class GeneralTimeSelector extends DialogFragment {
         timeInput = view.findViewById(R.id.time_input);
         Numpad numpad = view.findViewById(R.id.num);
 
-        if (getArguments() != null) {
-            timeInput.setText(getArguments().getString("display"));
-        }
-
         numpad.setOnTextChangeListner(new TextGetListner() {
             @Override
             public void onTextChange(String text, int digits_remaining) {
@@ -73,18 +72,12 @@ public class GeneralTimeSelector extends DialogFragment {
                 } else {
                     timeInput.setText(text);
                 }
-                Log.d("input",text+"  "+digits_remaining);
             }
         });
 
         builder.setView(view);
 
-        builder.setPositiveButton(R.string.fragment_next_button, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                onInputListener.sendSelectedTime(Integer.parseInt(timeInput.getText().toString()));
-            }
-        });
+        builder.setPositiveButton(R.string.fragment_next_button, null);
 
         builder.setNegativeButton(R.string.fragment_back_button, new DialogInterface.OnClickListener() {
             @Override
@@ -105,6 +98,25 @@ public class GeneralTimeSelector extends DialogFragment {
         dialogFragment.setCanceledOnTouchOutside(false);
 
         return dialogFragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AlertDialog alertDialog = (AlertDialog) getDialog();
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int generalTime = Integer.parseInt(timeInput.getText().toString());
+
+                if (generalTime != 0) {
+                    onInputListener.sendSelectedTime(generalTime);
+                    dismiss();
+                } else {
+                    Toast.makeText(getContext(), R.string.general_time_invalid_toast, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

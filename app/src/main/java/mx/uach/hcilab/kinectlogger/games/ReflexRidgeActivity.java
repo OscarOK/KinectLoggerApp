@@ -1,5 +1,6 @@
 package mx.uach.hcilab.kinectlogger.games;
 
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -102,7 +104,11 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
+            // FINISH AND DO A ROLLBACK
             finish();
+            // OR EQUIVALENT TO CLICK FINISH SESSION
+            //endSession();
+
         } else if (id == R.id.action_finish_reflex_ridge) {
             endSession();
         }
@@ -151,7 +157,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
                 Log.i(TAG, "logEvent: NOT SUPPORTED ACTION");
         }
 
-        if (!badFlag || !inhibitionFlag) {
+        if (badFlag || inhibitionFlag) {
             flagsDown();
         }
     }
