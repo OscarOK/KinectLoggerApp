@@ -29,9 +29,10 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
 
     ImageButton cabeza, torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton;
-    private long gameTime;
-    private GameLogger.Leaks logger;
-    int contador = 0, selected_level;
+    private long gameTime,gameTime2,gameTime3;
+    private GameLogger.Leaks leaks;
+    int contador = 0, selected_level=1, time,timeHelper, generalTime=0;
+    private static final int MAX_LEVEL = 9;
     ImageView vista;
     FrameLayout levelFragment;
 
@@ -43,8 +44,11 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaks);
+        gameTime = System.nanoTime();
 
-        logger = new GameLogger.Leaks(
+        fragment = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+
+        leaks = new GameLogger.Leaks(
                 getIntent().getStringExtra(Therapist.THERAPIST_KEY),
                 getIntent().getStringExtra(Patient.PATIENT_KEY)
         );
@@ -63,6 +67,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         vista = (ImageView) findViewById(R.id.imageView);
         levelFragment = (FrameLayout) findViewById(R.id.fragmentContainer);
 
+
         fragment = new LevelSelector();
         fragmentManager = getSupportFragmentManager();
         fragment.show(fragmentManager, "fragment_");
@@ -72,7 +77,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         cabeza.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    leaks.LogBodyPart(GameLogger.Leaks.Parts.HEAD);
                     cabeza.setImageDrawable(getResources().getDrawable(R.drawable.ic_cabezav));
                 }
                 else{
@@ -84,7 +91,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         torzo.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    leaks.LogBodyPart(GameLogger.Leaks.Parts.CHEST);
                     torzo.setImageDrawable(getResources().getDrawable(R.drawable.ic_torzov));
                 }
                 else{
@@ -96,7 +105,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         bderecho.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    leaks.LogBodyPart(GameLogger.Leaks.Parts.RIGHT_ARM);
                     bderecho.setImageDrawable(getResources().getDrawable(R.drawable.ic_bderechov));
                 }
                 else{
@@ -108,7 +119,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         bizquierdo.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    leaks.LogBodyPart(GameLogger.Leaks.Parts.LEFT_ARM);
                     bizquierdo.setImageDrawable(getResources().getDrawable(R.drawable.ic_bizquierdov));
                 }
                 else{
@@ -120,7 +133,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         pderecha.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    leaks.LogBodyPart(GameLogger.Leaks.Parts.RIGHT_LEG);
                     pderecha.setImageDrawable(getResources().getDrawable(R.drawable.ic_pderechav));
                 }
                 else{
@@ -132,7 +147,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         pizquierda.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    leaks.LogBodyPart(GameLogger.Leaks.Parts.LEFT_LEG);
                     pizquierda.setImageDrawable(getResources().getDrawable(R.drawable.ic_pizquierdav));
                 }
                 else{
@@ -147,14 +164,51 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
                 contador++;
                 switch (contador){
                     case 1:
+                        gameTime = System.nanoTime() - gameTime;
+                        timeHelper = (int)(gameTime/1000000000);
+                        time = 45 - timeHelper;
+                        generalTime = timeHelper + generalTime;
+                        if(time > 0) {
+                            leaks.LogWaveTime(1, time);
+
+                        }else{
+                            leaks.LogWaveTime(1,0);
+                        }
+                        gameTime2 = System.nanoTime();
+                        time=0;
+                        timeHelper=0;
                         vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada2));
                         break;
 
                     case 2:
+                        gameTime2 = System.nanoTime() - gameTime2;
+                        timeHelper = (int) (gameTime2/1000000000);
+                        time = 45 - timeHelper;
+                        generalTime = timeHelper + generalTime;
+                        if(time > 0) {
+                            leaks.LogWaveTime(2, time);
+                        }else{
+                            leaks.LogWaveTime(2,0);
+                        }
+                        gameTime3 = System.nanoTime();
+                        time = 0;
+                        timeHelper = 0;
                         vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada3));
+
                         break;
 
-                    case 3 : finish();
+                    case 3 :
+                        gameTime3 = System.nanoTime() - gameTime3;
+                        timeHelper = (int) (gameTime3/1000000000);
+                        generalTime = timeHelper + generalTime;
+                        time = 45 - timeHelper;
+                        if(time > 0) {
+                            leaks.LogWaveTime(3, time);
+                        }else{
+                            leaks.LogWaveTime(3,0);
+                        }
+                        leaks.LogGeneralTime(generalTime);
+                        finish();
                 }
             }
         });
@@ -205,7 +259,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
                 for (int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
                     fragmentManager.popBackStack();
                 }
-                // TODO: START CHRONOMETER
+
                 dialogInterface.dismiss();
             }
         });
@@ -224,6 +278,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         Dialog dialogFragment = builder.create();
         dialogFragment.setCanceledOnTouchOutside(false);
         dialogFragment.show();
+        leaks.LogLevel(selected_level);
     }
 
 

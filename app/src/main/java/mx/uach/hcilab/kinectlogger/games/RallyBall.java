@@ -18,12 +18,18 @@ import android.widget.ImageView;
 
 import mx.uach.hcilab.kinectlogger.R;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
+import mx.uach.hcilab.kinectlogger.Patient;
+import mx.uach.hcilab.kinectlogger.Therapist;
+import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
+import mx.uach.hcilab.kinectlogger.util.GameLogger;
 
 public class RallyBall extends AppCompatActivity implements LevelSelector.OnInputListener{
 
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton,boton2;
-    int contador=0,selected_level;;
+    private long gameTime , gameTime2, gameTime3;
+    int contador=0,selected_level, time, timeHelper, generalTime;
+    private GameLogger.RallyBall rally;
     ImageView vista;
     FrameLayout levelFragment;
     FragmentManager fragmentManager;
@@ -36,9 +42,15 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rally_ball);
 
+        gameTime = System.nanoTime();
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        rally = new mx.uach.hcilab.kinectlogger.util.GameLogger.RallyBall(
+                getIntent().getStringExtra(Therapist.THERAPIST_KEY),
+                getIntent().getStringExtra(Patient.PATIENT_KEY)
+        );
 
         cabeza = (ImageButton) findViewById(R.id.cabeza);
         torzo = (ImageButton) findViewById(R.id.torzo);
@@ -136,14 +148,51 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
                 contador++;
                 switch (contador){
                     case 1:
+                        gameTime = System.nanoTime() - gameTime;
+                        timeHelper = (int)(gameTime/1000000000);
+                        time = 45 - timeHelper;
+                        generalTime = timeHelper + generalTime;
+                        if(time > 0) {
+                            rally.LogWaveTime(1, time);
+
+                        }else{
+                            rally.LogWaveTime(1,0);
+                        }
+                        gameTime2 = System.nanoTime();
+                        time=0;
+                        timeHelper=0;
                         vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada2));
                         break;
 
                     case 2:
+                        gameTime2 = System.nanoTime() - gameTime2;
+                        timeHelper = (int) (gameTime2/1000000000);
+                        time = 45 - timeHelper;
+                        generalTime = timeHelper + generalTime;
+                        if(time > 0) {
+                            rally.LogWaveTime(2, time);
+                        }else{
+                            rally.LogWaveTime(2,0);
+                        }
+                        gameTime3 = System.nanoTime();
+                        time = 0;
+                        timeHelper = 0;
                         vista.setImageDrawable(getResources().getDrawable(R.drawable.ic_oleada3));
+
                         break;
 
-                    case 3 : finish();
+                    case 3 :
+                        gameTime3 = System.nanoTime() - gameTime3;
+                        timeHelper = (int) (gameTime3/1000000000);
+                        generalTime = timeHelper + generalTime;
+                        time = 45 - timeHelper;
+                        if(time > 0) {
+                            rally.LogWaveTime(3, time);
+                        }else{
+                            rally.LogWaveTime(3,0);
+                        }
+                        rally.LogGeneralTime(generalTime);
+                        finish();
                 }
             }
         });
