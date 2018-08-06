@@ -1,6 +1,7 @@
 package mx.uach.hcilab.kinectlogger.games;
 
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -133,17 +134,17 @@ public class RiverRushActivity extends AppCompatActivity implements
         }
     }
 
-    public void cloudClick(View v) {
+    public void cloudEvent(View v) {
         if (!isHappy) {
             // Change cloud button appearance
-            cloudEvent(R.drawable.ic_happy_cloud, R.color.colorAccent);
-            // Disable buttons
+            applyColorFilter();
+            // Able buttons
             changeButtonsAvailability();
-            // Start cloud time
+            // Stop cloud time
             cloudTime = System.nanoTime();
         } else {
             // Change cloud button appearance
-            cloudEvent(R.drawable.ic_sad_cloud, android.R.color.white);
+            clearColorFilter();
             // Able buttons
             changeButtonsAvailability();
             // Stop cloud time
@@ -155,14 +156,26 @@ public class RiverRushActivity extends AppCompatActivity implements
         isHappy = !isHappy;
     }
 
-    private void cloudEvent(int imageId, @ColorRes int color) {
-        ImageButton button = findViewById(R.id.river_rush_cloud);
+    private void applyColorFilter() {
+        final ImageButton button = findViewById(R.id.river_rush_cloud);
+        button.setImageResource(R.drawable.ic_happy_cloud);
 
-        button.setImageResource(imageId);
-        button.getBackground().setColorFilter(
-                ContextCompat.getColor(
-                        RiverRushActivity.this, color),
-                PorterDuff.Mode.MULTIPLY);
+        button.post(new Runnable() {
+            @Override
+            public void run() {
+                PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
+                        getResources().getColor(R.color.colorAccent),
+                        PorterDuff.Mode.SRC_ATOP
+                );
+                button.getBackground().setColorFilter(colorFilter);
+            }
+        });
+    }
+
+    private void clearColorFilter() {
+        ImageButton button = findViewById(R.id.river_rush_cloud);
+        button.setImageResource(R.drawable.ic_sad_cloud);
+        button.getBackground().clearColorFilter();
     }
 
     private void changeButtonsAvailability() {
@@ -213,7 +226,7 @@ public class RiverRushActivity extends AppCompatActivity implements
         fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
         gameTime = System.nanoTime() - gameTime;
         if (isHappy) {
-            cloudClick(new ImageButton(this).findViewById(R.id.river_rush_cloud));
+            cloudEvent(new ImageButton(this).findViewById(R.id.river_rush_cloud));
         }
     }
 

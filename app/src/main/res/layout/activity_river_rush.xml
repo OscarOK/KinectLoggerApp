@@ -135,7 +135,7 @@
                 android:layout_height="0dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_sad_cloud"
-                android:onClick="cloudClick"
+                android:onClick="cloudEvent"
                 android:theme="@style/WhiteTint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/river_rush_middle_inhibition"
