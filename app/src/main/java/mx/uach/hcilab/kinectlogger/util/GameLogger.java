@@ -246,21 +246,13 @@ public class GameLogger {
             HEAD, LEFT_ARM, RIGHT_ARM, CHEST, LEFT_LEG, RIGHT_LEG
         }
 
-        public enum State {
-            GOOD, INHIBITION
-        }
-
         DocumentReference sessionReference;
 
         private String therapistKey, patientKey;
         private long date;
 
-        private int goodHead = 0,      inhibitionHead = 0;
-        private int goodLeftArm = 0,   inhibitionLeftArm = 0;
-        private int goodRightArm = 0,  inhibitionRightArm = 0;
-        private int goodChest = 0,     inhibitionChest = 0;
-        private int goodLeftLeg = 0,   inhibitionLeftLeg = 0;
-        private int goodRightLeg = 0, inhibitionRightLeg = 0;
+        private int head = 0, leftArm = 0, rightArm = 0, chest = 0, leftLeg = 0, rightLeg = 0;
+        private int inhibition = 0;
 
         private int firstWaveTime = 0, secondWaveTime = 0, thirdWaveTime = 0;
         private int generalTime = 0;
@@ -274,44 +266,19 @@ public class GameLogger {
             sessionReference = FirebaseFirestore.getInstance().collection(GAME_TAG).document();
         }
 
-        public void LogBodyPart (Parts part, State state) {
+        public void LogInhibition(){
+            inhibition++;
+            uploadLog();
+        }
+
+        public void LogBodyPart (Parts part) {
             switch (part){
-                case HEAD:
-                    if(state == State.GOOD)
-                        goodHead++;
-                    else
-                        inhibitionHead++;
-                    break;
-                case LEFT_ARM:
-                    if(state == State.GOOD)
-                        goodLeftArm++;
-                    else
-                        inhibitionLeftArm++;
-                    break;
-                case RIGHT_ARM:
-                    if(state == State.GOOD)
-                        goodRightArm++;
-                    else
-                        inhibitionRightArm++;
-                    break;
-                case CHEST:
-                    if(state == State.GOOD)
-                        goodChest++;
-                    else
-                        inhibitionChest++;
-                    break;
-                case LEFT_LEG:
-                    if(state == State.GOOD)
-                        goodLeftLeg++;
-                    else
-                        inhibitionLeftLeg++;
-                    break;
-                case RIGHT_LEG:
-                    if(state == State.GOOD)
-                        goodRightLeg++;
-                    else
-                        inhibitionRightLeg++;
-                    break;
+                case HEAD:      head++;     break;
+                case LEFT_ARM:  leftArm++;  break;
+                case RIGHT_ARM: rightArm++; break;
+                case CHEST:     chest++;    break;
+                case LEFT_LEG:  leftLeg++;  break;
+                case RIGHT_LEG: rightLeg++; break;
             }
             uploadLog();
         }
@@ -341,18 +308,14 @@ public class GameLogger {
             map.put("patientKey", patientKey);
             map.put("date", date);
 
-            map.put("goodHeads", goodHead);
-            map.put("inhibitionHeads", inhibitionHead);
-            map.put("goodLeftArms", goodLeftArm);
-            map.put("inhibitionLeftArms", inhibitionLeftArm);
-            map.put("goodRightArms", goodRightArm);
-            map.put("inhibitionRightArms", inhibitionRightArm);
-            map.put("goodChests", goodChest);
-            map.put("inhibitionChests", inhibitionChest);
-            map.put("goodLeftLegs", goodLeftLeg);
-            map.put("inhibitionLeftLegs", inhibitionLeftLeg);
-            map.put("goodRightLegs", goodLeftLeg);
-            map.put("inhibitionRightLegs", inhibitionLeftLeg);
+            map.put("heads", head);
+            map.put("leftArms", leftArm);
+            map.put("rightArms", rightArm);
+            map.put("chests", chest);
+            map.put("leftLegs", leftLeg);
+            map.put("rightLegs", rightLeg);
+
+            map.put("inhibitions", inhibition);
 
             map.put("firstWaveTime", firstWaveTime);
             map.put("secondWaveTime", secondWaveTime);
@@ -458,9 +421,10 @@ public class GameLogger {
     /*  Examples
 
         GameLogger.RallyBall rallyBall = new GameLogger.RallyBall(therapistKey, patientKey);
-        rallyBall.LogBodyPart(GameLogger.RallyBall.Parts.LEFT_ARM, GameLogger.RallyBall.State.INHIBITION);
-        rallyBall.LogBodyPart(GameLogger.RallyBall.Parts.CHEST, GameLogger.RallyBall.State.GOOD);
-        rallyBall.LogBodyPart(GameLogger.RallyBall.Parts.RIGHT_LEG, GameLogger.RallyBall.State.GOOD);
+        rallyBall.LogBodyPart(GameLogger.RallyBall.Parts.LEFT_ARM);
+        rallyBall.LogBodyPart(GameLogger.RallyBall.Parts.CHEST);
+        rallyBall.LogBodyPart(GameLogger.RallyBall.Parts.RIGHT_LEG);
+        rallyBall.LogInhibition();
         rallyBall.LogLevel(2);
         rallyBall.LogGeneralTime(56);
         rallyBall.LogWaveTime(1, 35);
