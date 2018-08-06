@@ -1,15 +1,13 @@
 package mx.uach.hcilab.kinectlogger.games;
 
-import android.content.DialogInterface;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -48,8 +46,8 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     private int levelSelected = 1;
     private int generalTime;
 
-    private Handler generalTimeHandler;
-    private Handler stateHandler;
+    private static Handler generalTimeHandler;
+    private static Handler stateHandler;
     private GameLogger.ReflexRidge logger;
     private long gameTime;
 
@@ -119,7 +117,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     private void flagsDown() {
         badFlag = false;
         inhibitionFlag = false;
-        coloringButtons(R.color.colorGoodGreen);
+        clearColorFilter();
     }
 
     public void logEvent(View v) {
@@ -190,20 +188,34 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         logger.LogExtraTime((int) (generalTime - gameTime));
     }
 
-    private void coloringButtons(@ColorRes int color) {
+    private void applyColorFilter(@ColorRes int color) {
         int[] imageButtons = {
                 R.id.button_jump,
                 R.id.button_left, R.id.button_boost, R.id.button_right,
                 R.id.button_squad
         };
-        // THANKS TO SOJIN (https://stackoverflow.com/users/388889/sojin)
-        // https://stackoverflow.com/questions/13842447/android-set-button-background-programmatically
+
+        PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(
+                getResources().getColor(color),
+                PorterDuff.Mode.SRC_ATOP
+        );
+
         for (int id : imageButtons) {
             ImageButton imageButton = findViewById(id);
-            imageButton.getBackground().setColorFilter(
-                    ContextCompat.getColor(
-                            ReflexRidgeActivity.this, color),
-                    PorterDuff.Mode.MULTIPLY);
+            imageButton.getBackground().setColorFilter(colorFilter);
+        }
+    }
+
+    private void clearColorFilter() {
+        int[] imageButtons = {
+                R.id.button_jump,
+                R.id.button_left, R.id.button_boost, R.id.button_right,
+                R.id.button_squad
+        };
+
+        for (int id : imageButtons) {
+            ImageButton imageButton = findViewById(id);
+            imageButton.getBackground().clearColorFilter();
         }
     }
 
@@ -216,7 +228,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
         stateHandler.sendEmptyMessageDelayed(0, RESPONSE_DELAY);
 
-        coloringButtons(color);
+        applyColorFilter(color);
     }
 
     @Override
