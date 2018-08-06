@@ -46,7 +46,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         setContentView(R.layout.activity_leaks);
         gameTime = System.nanoTime();
 
-        fragment = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+
 
         leaks = new GameLogger.Leaks(
                 getIntent().getStringExtra(Therapist.THERAPIST_KEY),
@@ -69,6 +69,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
 
 
         fragment = new LevelSelector();
+        fragment = LevelSelector.newInstance(MAX_LEVEL, selected_level);
         fragmentManager = getSupportFragmentManager();
         fragment.show(fragmentManager, "fragment_");
         fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();

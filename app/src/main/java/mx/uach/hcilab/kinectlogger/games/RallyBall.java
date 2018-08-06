@@ -28,7 +28,8 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton,boton2;
     private long gameTime , gameTime2, gameTime3;
-    int contador=0,selected_level, time, timeHelper, generalTime;
+    private static final int MAX_LEVEL = 9;
+    int contador=0,selected_level=1, time, timeHelper, generalTime;
     private GameLogger.RallyBall rally;
     ImageView vista;
     FrameLayout levelFragment;
@@ -65,6 +66,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
 
 
         fragment= new LevelSelector();
+        fragment = LevelSelector.newInstance(MAX_LEVEL, selected_level);
         fragmentManager = getSupportFragmentManager();
         fragment.show(fragmentManager, "fragment_");
         fragmentManager.beginTransaction().addToBackStack("add_fragment_").commit();
@@ -74,6 +76,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    rally.LogBodyPart(GameLogger.RallyBall.Parts.HEAD);
                     cabeza.setImageDrawable(getResources().getDrawable(R.drawable.ic_cabezav));
                 }
                 else{
@@ -86,6 +89,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    rally.LogBodyPart(GameLogger.RallyBall.Parts.CHEST);
                     torzo.setImageDrawable(getResources().getDrawable(R.drawable.ic_torzov));
                 }
                 else{
@@ -98,6 +102,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    rally.LogBodyPart(GameLogger.RallyBall.Parts.RIGHT_ARM);
                     bderecho.setImageDrawable(getResources().getDrawable(R.drawable.ic_bderechov));
                 }
                 else{
@@ -110,6 +115,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    rally.LogBodyPart(GameLogger.RallyBall.Parts.LEFT_ARM);
                     bizquierdo.setImageDrawable(getResources().getDrawable(R.drawable.ic_bizquierdov));
                 }
                 else{
@@ -122,6 +128,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    rally.LogBodyPart(GameLogger.RallyBall.Parts.RIGHT_LEG);
                     pderecha.setImageDrawable(getResources().getDrawable(R.drawable.ic_pderechav));
                 }
                 else{
@@ -134,6 +141,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction()== MotionEvent.ACTION_DOWN) {
+                    rally.LogBodyPart(GameLogger.RallyBall.Parts.LEFT_LEG);
                     pizquierda.setImageDrawable(getResources().getDrawable(R.drawable.ic_pizquierdav));
                 }
                 else{
@@ -200,7 +208,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         boton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                rally.LogInhibition();
             }
         });
     }
