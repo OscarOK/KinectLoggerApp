@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.github.stephenvinouze.materialnumberpickercore.MaterialNumberPicker;
@@ -41,6 +43,7 @@ public class LevelSelector extends DialogFragment {
 
         LevelSelector fragment = new LevelSelector();
         fragment.setArguments(args);
+        fragment.setCancelable(false);
         return fragment;
     }
 
@@ -81,11 +84,22 @@ public class LevelSelector extends DialogFragment {
             }
         });
 
-        Dialog dialogFragment;
-        dialogFragment = builder.create();
-        dialogFragment.setCanceledOnTouchOutside(false);
+        builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
 
-        return dialogFragment;
+                if (keyCode == KeyEvent.KEYCODE_BACK &&
+                        keyEvent.getAction() == KeyEvent.ACTION_UP &&
+                        !keyEvent.isCanceled()) {
+                    onInputListener.onChoose();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        return builder.create();
     }
 
     @Override

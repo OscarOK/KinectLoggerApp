@@ -9,8 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fxn769.Numpad;
 import com.fxn769.TextGetListner;
@@ -38,6 +40,7 @@ public class ConfirmFragment extends DialogFragment {
 
         ConfirmFragment fragment = new ConfirmFragment();
         fragment.setArguments(args);
+        fragment.setCancelable(false);
         return fragment;
     }
 
@@ -77,11 +80,21 @@ public class ConfirmFragment extends DialogFragment {
             }
         });
 
-        Dialog dialogFragment;
-        dialogFragment = builder.create();
-        dialogFragment.setCanceledOnTouchOutside(false);
+        builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                if (keyCode == KeyEvent.KEYCODE_BACK &&
+                        keyEvent.getAction() == KeyEvent.ACTION_UP &&
+                        !keyEvent.isCanceled()) {
+                    onInputListener.goBack();
+                    dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
 
-        return dialogFragment;
+        return builder.create();
     }
 
     @Override

@@ -2,6 +2,7 @@ package mx.uach.hcilab.kinectlogger.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -38,6 +39,16 @@ public class PointsSelector extends DialogFragment {
         super.onCreate(savedInstanceState);
     }
 
+    public static PointsSelector newInstance() {
+
+        Bundle args = new Bundle();
+
+        PointsSelector fragment = new PointsSelector();
+        fragment.setArguments(args);
+        fragment.setCancelable(false);
+        return fragment;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -72,11 +83,7 @@ public class PointsSelector extends DialogFragment {
             }
         });
 
-        Dialog dialogFragment;
-        dialogFragment = builder.create();
-        dialogFragment.setCanceledOnTouchOutside(false);
-
-        return dialogFragment;
+        return builder.create();
     }
 
     @Override
