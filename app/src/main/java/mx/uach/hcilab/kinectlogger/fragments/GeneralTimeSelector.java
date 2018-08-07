@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ public class GeneralTimeSelector extends DialogFragment {
 
         GeneralTimeSelector fragment = new GeneralTimeSelector();
         fragment.setArguments(args);
+        fragment.setCancelable(false);
         return fragment;
     }
 
@@ -93,11 +95,21 @@ public class GeneralTimeSelector extends DialogFragment {
             }
         });
 
-        Dialog dialogFragment;
-        dialogFragment = builder.create();
-        dialogFragment.setCanceledOnTouchOutside(false);
+        builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                if (keyCode == KeyEvent.KEYCODE_BACK &&
+                        keyEvent.getAction() == KeyEvent.ACTION_UP &&
+                        !keyEvent.isCanceled()) {
+                    onInputListener.goBack();
+                    return true;
+                }
 
-        return dialogFragment;
+                return false;
+            }
+        });
+
+        return builder.create();
     }
 
     @Override

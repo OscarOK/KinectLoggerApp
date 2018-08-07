@@ -1,11 +1,11 @@
 package mx.uach.hcilab.kinectlogger.games;
 
+import android.app.Dialog;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.support.annotation.ColorRes;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.R;
@@ -31,7 +32,7 @@ public class RiverRushActivity extends AppCompatActivity implements
     private static final String TAG = "RiverRushActivity";
 
     private static final int MAX_LEVEL = 6;
-    private int selected_level = 1;
+    private int selectedLevel = 1;
 
     private boolean isHappy = false;
 
@@ -54,13 +55,8 @@ public class RiverRushActivity extends AppCompatActivity implements
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        // Fragments stuff
-        fragments[0] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
-        fragments[1] = new PointsSelector();
-
         fragmentManager = getSupportFragmentManager();
-        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+        addLevelSelector();
 
         // GameLogger Instance
         logger = new GameLogger.RiverRush(
@@ -91,6 +87,7 @@ public class RiverRushActivity extends AppCompatActivity implements
 
     /**
      * OnClick event for actions
+     *
      * @param v ImageButtons
      */
     public void logEvent(View v) {
@@ -192,18 +189,35 @@ public class RiverRushActivity extends AppCompatActivity implements
         }
     }
 
+    private void addLevelSelector() {
+        LevelSelector levelSelector = LevelSelector.newInstance(MAX_LEVEL, selectedLevel);
+        fragmentManager.beginTransaction()
+                .add(levelSelector, "fragment" + fragmentIndex)
+                .commit();
+    }
+
+    private void addPointsSelector() {
+        PointsSelector pointsSelector = PointsSelector.newInstance();
+        fragmentManager.beginTransaction()
+                .add(pointsSelector, "pointsSelector")
+                .commit();
+    }
+
+    private void addConfirmationFragment() {
+        ConfirmFragment confirmFragment = ConfirmFragment.newInstance(
+                getResources().getString(R.string.confirmation_message_no_time, selectedLevel)
+        );
+        fragmentManager.beginTransaction()
+                .add(confirmFragment, "fragment" + fragmentIndex)
+                .commit();
+    }
+
     // FRAGMENTS INTERACTION METHODS
     @Override
     public void sendSelectedLevel(int level) {
-        selected_level = level;
+        selectedLevel = level;
         fragmentIndex++;
-        DialogFragment confirmDialog = ConfirmFragment
-                .newInstance(
-                        getResources().getString(
-                                R.string.confirmation_message_no_time, selected_level
-                        ));
-
-        confirmDialog.show(fragmentManager, "confirmation");
+        addConfirmationFragment();
     }
 
     @Override
@@ -217,28 +231,29 @@ public class RiverRushActivity extends AppCompatActivity implements
         for (int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
             fragmentManager.popBackStack();
         }
-        logger.LogLevel(selected_level);
+        logger.LogLevel(selectedLevel);
         gameTime = System.nanoTime();
     }
 
     private void endSession() {
-        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
-        gameTime = System.nanoTime() - gameTime;
         if (isHappy) {
             cloudEvent(new ImageButton(this).findViewById(R.id.river_rush_cloud));
         }
+        gameTime = System.nanoTime() - gameTime;
+        addPointsSelector();
     }
 
     @Override
     public void goBack() {
         fragmentIndex--;
-        fragmentManager.popBackStack("fragment_" + fragmentIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        if (fragmentIndex == 0) {
-            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, selected_level);
+
+        switch (fragmentIndex) {
+            case 0:
+                addLevelSelector();
+                break;
+            default:
+                Log.e(TAG, "goBack: Fragment not supported");
         }
-        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
     }
 
     @Override
