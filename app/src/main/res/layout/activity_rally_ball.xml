@@ -21,6 +21,7 @@
 
     <Button
         android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="271.5dp"
         android:layout_height="99dp"
         android:layout_marginBottom="16dp"
@@ -28,7 +29,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginStart="20dp"
-        android:backgroundTint="@color/colorInhibitionYellow"
+        android:theme="@style/ButtonInhibitionTint"
         android:text="@string/button_action_inhibition"
         android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -129,6 +130,7 @@
 
     <Button
         android:id="@+id/button"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="271.5dp"
         android:layout_height="99dp"
         android:layout_marginBottom="16dp"
@@ -136,7 +138,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginStart="20dp"
-        android:backgroundTint="@color/colorBadRed"
+        android:theme="@style/ButtonBadTint"
         android:text="@string/finish_round"
         android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="parent"
