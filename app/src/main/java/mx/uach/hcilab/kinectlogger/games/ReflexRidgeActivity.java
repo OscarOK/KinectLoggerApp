@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorRes;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,7 +31,9 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         LevelSelector.OnInputListener, GeneralTimeSelector.OnInputListener,
         PointsSelector.OnInputListener, ConfirmFragment.OnInputListener {
 
-    private static final long RESPONSE_DELAY = 1000;
+    private static final String TAG_STATUS_DELAY = "STATUS_DELAY_TIME";
+    private static final String SHARED_PREFERENCES_NAME = "GAMES_PREFERENCES";
+    private static long responseDelay;
 
     private static final String TAG = "ReflexRidgeActivity";
 
@@ -60,6 +61,9 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        // Set delay time
+        responseDelay = (long) (1000 * getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE).getFloat(TAG_STATUS_DELAY, 1));
 
         // Fragments stuff
         fragmentManager = getSupportFragmentManager();
@@ -220,7 +224,7 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
             otherFlag = false;
         }
 
-        stateHandler.sendEmptyMessageDelayed(0, RESPONSE_DELAY);
+        stateHandler.sendEmptyMessageDelayed(0, responseDelay);
 
         applyColorFilter(color);
     }

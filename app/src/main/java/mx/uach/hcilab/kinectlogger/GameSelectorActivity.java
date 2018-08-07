@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
@@ -51,11 +53,20 @@ public class GameSelectorActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.game_selector_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
             finish();
+        } else if (id == R.id.action_settings) {
+            startActivity(new Intent(GameSelectorActivity.this, SettingsActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

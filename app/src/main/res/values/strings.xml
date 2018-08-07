@@ -32,6 +32,11 @@
     <string name="warning_fields_incomplete">Por favor, llena todos los campos.</string>
 
     <string name="action_finish_session">Terminar Sesión</string>
+    <string name="action_settings">Ajustes</string>
+
+    <string name="settings_reflex_ridge_title">Ajuste de Cumbre de Reflejos</string>
+
+    <string name="reflex_ridge_status_delay_time_hint">Tiempo de espera en segundos para el estado</string>
 
     <string name="level_selector_title">Selecciona un nivel</string>
     <string name="general_time_title">Ingresa el tiempo general</string>
