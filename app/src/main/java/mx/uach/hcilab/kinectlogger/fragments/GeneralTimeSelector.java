@@ -102,6 +102,7 @@ public class GeneralTimeSelector extends DialogFragment {
                         keyEvent.getAction() == KeyEvent.ACTION_UP &&
                         !keyEvent.isCanceled()) {
                     onInputListener.goBack();
+                    dismiss();
                     return true;
                 }
 

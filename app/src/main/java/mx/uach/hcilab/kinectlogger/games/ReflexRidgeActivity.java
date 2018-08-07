@@ -23,6 +23,7 @@ import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
 import mx.uach.hcilab.kinectlogger.fragments.GeneralTimeSelector;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
+import mx.uach.hcilab.kinectlogger.util.AdderFragmentHelper;
 import mx.uach.hcilab.kinectlogger.util.GameLogger;
 import mx.uach.hcilab.kinectlogger.util.GameLogger.ReflexRidge.State;
 import mx.uach.hcilab.kinectlogger.util.SoundPlayerHelper;
@@ -39,7 +40,6 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     private boolean badFlag = false;
 
     private FragmentManager fragmentManager;
-    private DialogFragment[] fragments = new DialogFragment[3];
     private int fragmentIndex = 0;
 
     private static final int MAX_LEVEL = 9;
@@ -62,13 +62,8 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
         }
 
         // Fragments stuff
-        fragments[0] = LevelSelector.newInstance(MAX_LEVEL, levelSelected);
-        fragments[1] = GeneralTimeSelector.newInstance("0");
-        fragments[2] = new PointsSelector();
-
         fragmentManager = getSupportFragmentManager();
-        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+        AdderFragmentHelper.addLevelSelector(fragmentManager, MAX_LEVEL, levelSelected);
 
         generalTimeHandler = new Handler() {
             @Override
@@ -181,11 +176,10 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     private void endSession() {
         generalTimeHandler.removeCallbacksAndMessages(null);
-        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
         gameTime = System.nanoTime() - gameTime;
         gameTime /= 1000000000;
         logger.LogExtraTime((int) (generalTime - gameTime));
+        AdderFragmentHelper.addPointsSelector(fragmentManager);
     }
 
     private void applyColorFilter(@ColorRes int color) {
@@ -235,27 +229,17 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     public void sendSelectedLevel(int level) {
         levelSelected = level;
         fragmentIndex++;
-        if (fragmentIndex == 0) {
-            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, levelSelected);
-        } else if (fragmentIndex == 1) {
-            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(generalTime));
-        }
-        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+        AdderFragmentHelper.addGeneralTimeSelector(fragmentManager, String.valueOf(generalTime));
     }
 
     @Override
     public void sendSelectedTime(int generalTime) {
         this.generalTime = generalTime;
         fragmentIndex++;
-
-        DialogFragment confirmDialog = ConfirmFragment
-                .newInstance(
-                        getResources().getString(
-                                R.string.confirmation_message, levelSelected, this.generalTime
-                        ));
-
-        confirmDialog.show(fragmentManager, "confirmation");
+        AdderFragmentHelper.addConfirmationFragment(
+                fragmentManager,
+                getResources().getString(R.string.confirmation_message, levelSelected, generalTime)
+        );
     }
 
     @Override
@@ -266,15 +250,10 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
 
     @Override
     public void confirmPressed() {
-        for (int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
-            fragmentManager.popBackStack();
-        }
-
         generalTimeHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-                fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
+                endSession();
             }
         };
         gameTime = System.nanoTime();
@@ -286,14 +265,16 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     @Override
     public void goBack() {
         fragmentIndex--;
-        fragmentManager.popBackStack("fragment_" + fragmentIndex, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        if (fragmentIndex == 0) {
-            fragments[fragmentIndex] = LevelSelector.newInstance(MAX_LEVEL, levelSelected);
-        } else if (fragmentIndex == 1) {
-            fragments[fragmentIndex] = GeneralTimeSelector.newInstance(String.valueOf(generalTime));
+
+        switch (fragmentIndex) {
+            case 0:
+                AdderFragmentHelper.addLevelSelector(fragmentManager, MAX_LEVEL, levelSelected);
+                break;
+            case 1:
+                AdderFragmentHelper.addGeneralTimeSelector(fragmentManager, String.valueOf(generalTime));
+            default:
+                Log.e(TAG, "goBack: Fragment not supported");
         }
-        fragments[fragmentIndex].show(fragmentManager, "fragment_" + fragmentIndex);
-        fragmentManager.beginTransaction().addToBackStack("add_fragment_" + fragmentIndex).commit();
     }
 
     @Override

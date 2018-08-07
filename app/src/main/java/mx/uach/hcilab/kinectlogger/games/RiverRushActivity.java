@@ -1,10 +1,7 @@
 package mx.uach.hcilab.kinectlogger.games;
 
-import android.app.Dialog;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,11 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.R;
 import mx.uach.hcilab.kinectlogger.Therapist;
+import mx.uach.hcilab.kinectlogger.util.AdderFragmentHelper;
 import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
@@ -37,7 +34,6 @@ public class RiverRushActivity extends AppCompatActivity implements
     private boolean isHappy = false;
 
     private FragmentManager fragmentManager;
-    private DialogFragment[] fragments = new DialogFragment[2];
     private int fragmentIndex = 0;
 
     private GameLogger.RiverRush logger;
@@ -56,7 +52,7 @@ public class RiverRushActivity extends AppCompatActivity implements
         }
 
         fragmentManager = getSupportFragmentManager();
-        addLevelSelector();
+        AdderFragmentHelper.addLevelSelector(fragmentManager, MAX_LEVEL, selectedLevel);
 
         // GameLogger Instance
         logger = new GameLogger.RiverRush(
@@ -189,35 +185,15 @@ public class RiverRushActivity extends AppCompatActivity implements
         }
     }
 
-    private void addLevelSelector() {
-        LevelSelector levelSelector = LevelSelector.newInstance(MAX_LEVEL, selectedLevel);
-        fragmentManager.beginTransaction()
-                .add(levelSelector, "fragment" + fragmentIndex)
-                .commit();
-    }
-
-    private void addPointsSelector() {
-        PointsSelector pointsSelector = PointsSelector.newInstance();
-        fragmentManager.beginTransaction()
-                .add(pointsSelector, "pointsSelector")
-                .commit();
-    }
-
-    private void addConfirmationFragment() {
-        ConfirmFragment confirmFragment = ConfirmFragment.newInstance(
-                getResources().getString(R.string.confirmation_message_no_time, selectedLevel)
-        );
-        fragmentManager.beginTransaction()
-                .add(confirmFragment, "fragment" + fragmentIndex)
-                .commit();
-    }
-
     // FRAGMENTS INTERACTION METHODS
     @Override
     public void sendSelectedLevel(int level) {
         selectedLevel = level;
         fragmentIndex++;
-        addConfirmationFragment();
+        AdderFragmentHelper.addConfirmationFragment(
+                fragmentManager,
+                getResources().getString(R.string.confirmation_message_no_time, selectedLevel)
+        );
     }
 
     @Override
@@ -228,9 +204,6 @@ public class RiverRushActivity extends AppCompatActivity implements
 
     @Override
     public void confirmPressed() {
-        for (int j = 0; j < fragmentManager.getBackStackEntryCount(); j++) {
-            fragmentManager.popBackStack();
-        }
         logger.LogLevel(selectedLevel);
         gameTime = System.nanoTime();
     }
@@ -240,7 +213,7 @@ public class RiverRushActivity extends AppCompatActivity implements
             cloudEvent(new ImageButton(this).findViewById(R.id.river_rush_cloud));
         }
         gameTime = System.nanoTime() - gameTime;
-        addPointsSelector();
+        AdderFragmentHelper.addPointsSelector(fragmentManager);
     }
 
     @Override
@@ -249,7 +222,7 @@ public class RiverRushActivity extends AppCompatActivity implements
 
         switch (fragmentIndex) {
             case 0:
-                addLevelSelector();
+                AdderFragmentHelper.addLevelSelector(fragmentManager, MAX_LEVEL, selectedLevel);
                 break;
             default:
                 Log.e(TAG, "goBack: Fragment not supported");
