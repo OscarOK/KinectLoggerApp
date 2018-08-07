@@ -66,6 +66,10 @@
     <string name="rally_ball_title">Carambola</string>
     <string name="reflex_ridge_title">Cumbre de Reflejos</string>
     <string name="leaks_title">Tapagrietas</string>
+
+    <string name="game_selector_title">Juegos</string>
+    <string name="patients_title">Pacientes</string>
+    <string name="therapist_title">Terapeutas</string>
 </resources>
 
 
