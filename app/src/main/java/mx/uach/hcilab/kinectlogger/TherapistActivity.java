@@ -62,6 +62,7 @@ public class TherapistActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setTitle(R.string.therapist_title);
         setContentView(R.layout.activity_therapists);
 
         mRecyclerView = (DiscreteScrollView) findViewById(R.id.therapistRecyclerView);
