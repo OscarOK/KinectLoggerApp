@@ -116,7 +116,7 @@ public class TherapistManagerActivity extends AppCompatActivity {
         mCameraIntentHelper = new CameraIntentHelper(this, new CameraIntentHelperCallback() {
             @Override
             public void onPhotoUriFound(Date dateCameraIntentStarted, Uri photoUri, int rotateXDegrees) {
-                Toast.makeText(getApplicationContext(), getString(R.string.activity_camera_intent_photo_uri_found) + photoUri.toString(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), getString(R.string.activity_camera_intent_photo_uri_found) + photoUri.toString(),Toast.LENGTH_LONG).show();
 
                 photoPath = photoUri;
                 Bitmap photo = BitmapHelper.readBitmap(TherapistManagerActivity.this, photoUri);

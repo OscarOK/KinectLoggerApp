@@ -161,9 +161,12 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
                 return false;
             }
         });
-        boton.setOnClickListener(new View.OnClickListener() {
+
+
+        boton.setLongClickable(true);
+        boton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onLongClick(View view) {
                 contador++;
                 switch (contador){
                     case 1:
@@ -213,6 +216,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
                         leaks.LogGeneralTime(generalTime);
                         finish();
                 }
+                return true;
             }
         });
     }
