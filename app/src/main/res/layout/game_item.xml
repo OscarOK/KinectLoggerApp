@@ -52,6 +52,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
+            android:padding="20dp"
             android:text="@string/button_play"
             android:theme="@style/ButtonGoodTint"
             app:layout_constraintBottom_toBottomOf="parent"
