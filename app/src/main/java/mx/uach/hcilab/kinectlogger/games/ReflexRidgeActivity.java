@@ -116,7 +116,8 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     private void flagsDown() {
         badFlag = false;
         inhibitionFlag = false;
-        clearColorFilter();
+//        clearColorFilter();
+        applyColorFilter(R.color.colorGoodGreen);
     }
 
     public void logEvent(View v) {
