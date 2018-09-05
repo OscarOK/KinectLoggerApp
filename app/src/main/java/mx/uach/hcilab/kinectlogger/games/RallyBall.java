@@ -152,9 +152,10 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
                 return false;
             }
         });
-        boton.setOnClickListener(new View.OnClickListener() {
+        boton.setLongClickable(true);
+        boton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onLongClick(View view) {
                 contador++;
                 switch (contador){
                     case 1:
@@ -204,6 +205,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
                         rally.LogGeneralTime(generalTime);
                         finish();
                 }
+                return true;
             }
         });
 

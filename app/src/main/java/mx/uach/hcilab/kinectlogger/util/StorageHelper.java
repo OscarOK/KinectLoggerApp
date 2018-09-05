@@ -2,6 +2,7 @@ package mx.uach.hcilab.kinectlogger.util;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,6 +51,7 @@ public class StorageHelper {
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.d("MyLog", "Downloaded image");
                             if(listener != null) listener.onSuccess(localFile);
                         }
                     }).addOnFailureListener(new OnFailureListener() {

@@ -59,6 +59,8 @@ public class TherapistActivity extends AppCompatActivity {
     FloatingActionButton mConfirmFab;
     TextView mWarningText;
 
+    HashMap<String, String> images = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +104,7 @@ public class TherapistActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        fireStoreAdapter.startListening();
         FirebaseFirestore.getInstance().collection(FirestoreHelper.THERAPIST_COLLECTION).limit(1).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -113,12 +116,12 @@ public class TherapistActivity extends AppCompatActivity {
                         }
                     }
                 });
-        fireStoreAdapter.startListening();
         super.onResume();
     }
 
     @Override
     protected void onStop() {
+        //images.clear();
         fireStoreAdapter.stopListening();
         super.onStop();
     }
@@ -126,8 +129,6 @@ public class TherapistActivity extends AppCompatActivity {
     FireStoreAdapter<TherapistViewHolder> fireStoreAdapter = new FireStoreAdapter<TherapistViewHolder>(
             FirebaseFirestore.getInstance().collection(FirestoreHelper.THERAPIST_COLLECTION).orderBy(Therapist.NAME)
     ) {
-
-        HashMap<String, String> images = new HashMap<>();
 
         @NonNull
         @Override

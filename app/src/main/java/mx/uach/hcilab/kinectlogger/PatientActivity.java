@@ -53,6 +53,8 @@ public class PatientActivity extends AppCompatActivity {
 
     String therapistKey;
 
+    HashMap<String, String> images = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,12 +124,16 @@ public class PatientActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    protected void onDestroy() {
+        
+        super.onDestroy();
+    }
+
     FireStoreAdapter<PatientActivity.PatientViewHolder> fireStoreAdapter =
             new FireStoreAdapter<PatientViewHolder>(
             FirebaseFirestore.getInstance().collection(FirestoreHelper.PATIENT_COLLECTION).orderBy(Patient.NAME)
     ) {
-
-        HashMap<String, String> images = new HashMap<>();
 
         @NonNull
         @Override
