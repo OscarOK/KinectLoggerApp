@@ -1,5 +1,6 @@
 package mx.uach.hcilab.kinectlogger.util;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,44 +20,71 @@ public class FirestoreHelper {
     public static final String PATIENT_COLLECTION = "patients";
 
 
-    public static void uploadTherapist(Therapist therapist){
-        FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
-        CollectionReference collection = firestoreDB.collection(THERAPIST_COLLECTION);
-        collection.document(therapist.getKey()).set(therapist.toMap())
-        .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "Terapeuta añadido correctamente");
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, e.getMessage());
-            }
-        });
-
-        StorageHelper.uploadImage(therapist.getPicturePath(), therapist.getKey(), null);
+    public interface OnUploadListener {
+        public void onSuccess();
     }
 
-    public static void uploadPatient(Patient patient){
-        FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
-        CollectionReference collection = firestoreDB.collection(PATIENT_COLLECTION);
-        collection.document(patient.getKey()).set(patient.toMap())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+    public static void uploadTherapist(Context context, Therapist therapist){
+        uploadTherapist(context, therapist, null);
+    }
+
+    public static void uploadTherapist(Context context, final Therapist therapist, final OnUploadListener listener){
+
+        StorageHelper.uploadImage(context, therapist.getPicturePath(), therapist.getKey(),
+                new StorageHelper.OnUploadImageListener() {
+            @Override
+            public void onSuccess() {FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                CollectionReference collection = firestoreDB.collection(THERAPIST_COLLECTION);
+                collection.document(therapist.getKey()).set(therapist.toMap())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Terapeuta añadido correctamente");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.getMessage());
+                            }
+                        });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+        });
+    }
+
+    public static void uploadPatient(Context context, final Patient patient){
+        StorageHelper.uploadImage(context, patient.getPicturePath(), patient.getKey(),
+                new StorageHelper.OnUploadImageListener() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Paciente añadido correctamente");
+                    public void onSuccess() {
+                        FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                        CollectionReference collection = firestoreDB.collection(PATIENT_COLLECTION);
+                        collection.document(patient.getKey()).set(patient.toMap())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "Paciente añadido correctamente");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(TAG, e.getMessage());
+                                    }
+                                });
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, e.getMessage());
+                    public void onFailure(Exception e) {
+
                     }
                 });
-
-        StorageHelper.uploadImage(patient.getPicturePath(), patient.getKey(), null);
     }
 
     public static String generateUniqueKey(User user){

@@ -142,7 +142,7 @@ public class PatientManagerActivity extends AppCompatActivity implements DatePic
                 maternalEditText.getText().toString(),
                 birthdayString,
                 photoPath);
-        FirestoreHelper.uploadPatient(patient);
+        FirestoreHelper.uploadPatient(getApplicationContext(), patient);
         finish();
     }
 
@@ -175,7 +175,17 @@ public class PatientManagerActivity extends AppCompatActivity implements DatePic
                 if (photo != null) {
                     photo = BitmapHelper.shrinkBitmap(photo, 300, rotateXDegrees);
 
-                    mPatientImageView.setImageBitmap(photo);
+                    Bitmap cropImg;
+                    int width = photo.getWidth();
+                    int height = photo.getHeight();
+                    if(width > height){
+                        int crop = (width - height) / 2;
+                        cropImg = Bitmap.createBitmap(photo, crop, 0, height, height);
+                    } else {
+                        int crop = (height - width) / 2;
+                        cropImg = Bitmap.createBitmap(photo, 0, crop, width, width);
+                    }
+                    mPatientImageView.setImageBitmap(cropImg);
                 }
             }
 

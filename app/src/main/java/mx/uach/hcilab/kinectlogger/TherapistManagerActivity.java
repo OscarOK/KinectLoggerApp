@@ -1,8 +1,10 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -98,12 +101,13 @@ public class TherapistManagerActivity extends AppCompatActivity {
             return;
         }
 
-        Therapist therapist = new Therapist(nameEditText.getText().toString(),
+        final Therapist therapist = new Therapist(nameEditText.getText().toString(),
                 paternalEditText.getText().toString(),
                 maternalEditText.getText().toString(),
                 photoPath);
-        FirestoreHelper.uploadTherapist(therapist);
+        FirestoreHelper.uploadTherapist(getApplicationContext(), therapist);
         finish();
+
     }
 
     @OnClick(R.id.button_take_photo)
@@ -123,7 +127,17 @@ public class TherapistManagerActivity extends AppCompatActivity {
                 if (photo != null) {
                     photo = BitmapHelper.shrinkBitmap(photo, 300, rotateXDegrees);
 
-                    mPatientImageView.setImageBitmap(photo);
+                    Bitmap cropImg;
+                    int width = photo.getWidth();
+                    int height = photo.getHeight();
+                    if(width > height){
+                        int crop = (width - height) / 2;
+                        cropImg = Bitmap.createBitmap(photo, crop, 0, height, height);
+                    } else {
+                        int crop = (height - width) / 2;
+                        cropImg = Bitmap.createBitmap(photo, 0, crop, width, width);
+                    }
+                    if(cropImg != null) mPatientImageView.setImageBitmap(cropImg);
                 }
             }
 

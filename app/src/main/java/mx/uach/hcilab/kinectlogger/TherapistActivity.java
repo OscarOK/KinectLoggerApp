@@ -92,7 +92,7 @@ public class TherapistActivity extends AppCompatActivity {
                 mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                mRecyclerView.smoothScrollToPosition(position);
+                //mRecyclerView.smoothScrollToPosition(position);
             }
 
             @Override
@@ -121,7 +121,6 @@ public class TherapistActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        //images.clear();
         fireStoreAdapter.stopListening();
         super.onStop();
     }
@@ -164,6 +163,7 @@ public class TherapistActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
+                        Log.e(TAG, e.getMessage());
                     }
                 });
             }
