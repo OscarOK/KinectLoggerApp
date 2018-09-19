@@ -283,6 +283,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         Dialog dialogFragment = builder.create();
         dialogFragment.setCanceledOnTouchOutside(false);
         dialogFragment.show();
+        rally.LogLevel(selected_level);
 
     }
 

@@ -9,6 +9,6 @@ import mx.uach.hcilab.kinectlogger.R;
 
 public class SoundPlayerHelper {
     public static void playButtonSound(Context context){
-        MediaPlayer.create(context, R.raw.bell).start();
+       // MediaPlayer.create(context, R.raw.bell).start();
     }
 }
