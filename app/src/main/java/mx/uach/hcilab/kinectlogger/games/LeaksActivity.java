@@ -237,7 +237,17 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            finish();
+            gameTime3 = System.nanoTime() - gameTime3;
+            timeHelper = (int) (gameTime3/1000000000);
+            generalTime = timeHelper + generalTime;
+            time = 45 - timeHelper;
+            if(time > 0) {
+                leaks.LogWaveTime(3, time);
+            }else{
+                leaks.LogWaveTime(3,0);
+            }
+            leaks.LogGeneralTime(generalTime);
+            AdderFragmentHelper.addPointsSelector(fragmentManager);
         }
         return super.onOptionsItemSelected(item);
     }

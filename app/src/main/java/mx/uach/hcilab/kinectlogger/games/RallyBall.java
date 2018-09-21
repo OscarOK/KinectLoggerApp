@@ -233,7 +233,17 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_finish_reflex_ridge) {
-            finish();
+            gameTime3 = System.nanoTime() - gameTime3;
+            timeHelper = (int) (gameTime3/1000000000);
+            generalTime = timeHelper + generalTime;
+            time = 45 - timeHelper;
+            if(time > 0) {
+                rally.LogWaveTime(3, time);
+            }else{
+                rally.LogWaveTime(3,0);
+            }
+            rally.LogGeneralTime(generalTime);
+            AdderFragmentHelper.addPointsSelector(fragmentManager);
         }
 
         return super.onOptionsItemSelected(item);
