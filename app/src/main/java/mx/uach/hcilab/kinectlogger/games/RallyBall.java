@@ -22,9 +22,12 @@ import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
 import mx.uach.hcilab.kinectlogger.Patient;
 import mx.uach.hcilab.kinectlogger.Therapist;
 import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
+import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
+import mx.uach.hcilab.kinectlogger.util.AdderFragmentHelper;
 import mx.uach.hcilab.kinectlogger.util.GameLogger;
 
-public class RallyBall extends AppCompatActivity implements LevelSelector.OnInputListener{
+public class RallyBall extends AppCompatActivity implements LevelSelector.OnInputListener,
+        PointsSelector.OnInputListener {
 
     ImageButton cabeza,torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton,boton2;
@@ -203,7 +206,7 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
                             rally.LogWaveTime(3,0);
                         }
                         rally.LogGeneralTime(generalTime);
-                        finish();
+                        AdderFragmentHelper.addPointsSelector(fragmentManager);
                 }
                 return true;
             }
@@ -239,6 +242,12 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
     @Override
     public void onChoose() {
        finish();
+    }
+
+    @Override
+    public void sendSelectedPoints(int points) {
+        rally.LogPoints(points);
+        finish();
     }
 
     @Override

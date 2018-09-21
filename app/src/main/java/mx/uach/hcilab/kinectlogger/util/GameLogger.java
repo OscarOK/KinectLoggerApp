@@ -257,6 +257,7 @@ public class GameLogger {
         private int firstWaveTime = 0, secondWaveTime = 0, thirdWaveTime = 0;
         private int generalTime = 0;
         private int level = 0;
+        private int points = 0;
 
         public RallyBall (String therapistKey, String patientKey) {
             this.therapistKey = therapistKey;
@@ -302,6 +303,11 @@ public class GameLogger {
             uploadLog();
         }
 
+        public void LogPoints(int points){
+            this.points = points;
+            uploadLog();
+        }
+
         private Map<String, Object> toMap() {
             Map<String, Object> map = new HashMap<>();
             map.put("therapistKey", therapistKey);
@@ -323,6 +329,7 @@ public class GameLogger {
 
             map.put("generalTime", generalTime);
             map.put("level", level);
+            map.put("points", points);
 
             return map;
         }
@@ -350,6 +357,7 @@ public class GameLogger {
         private int firstWaveTime = 0, secondWaveTime = 0, thirdWaveTime = 0;
         private int generalTime = 0;
         private int level = 0;
+        private int points = 0;
 
         public Leaks (String therapistKey, String patientKey) {
             this.therapistKey = therapistKey;
@@ -387,6 +395,12 @@ public class GameLogger {
 
         public void LogLevel (int level) {
             this.level = level;
+            uploadLog();
+        }
+
+        public void LogPoints (int points) {
+            this.points = points;
+            uploadLog();
         }
 
         private Map<String, Object> toMap() {
@@ -408,6 +422,7 @@ public class GameLogger {
 
             map.put("generalTime", generalTime);
             map.put("level", level);
+            map.put("points", points);
 
             return map;
         }

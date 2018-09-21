@@ -24,9 +24,12 @@ import mx.uach.hcilab.kinectlogger.R;
 import mx.uach.hcilab.kinectlogger.Therapist;
 import mx.uach.hcilab.kinectlogger.fragments.ConfirmFragment;
 import mx.uach.hcilab.kinectlogger.fragments.LevelSelector;
+import mx.uach.hcilab.kinectlogger.fragments.PointsSelector;
+import mx.uach.hcilab.kinectlogger.util.AdderFragmentHelper;
 import mx.uach.hcilab.kinectlogger.util.GameLogger;
 
-public class LeaksActivity extends AppCompatActivity implements LevelSelector.OnInputListener {
+public class LeaksActivity extends AppCompatActivity implements LevelSelector.OnInputListener,
+        PointsSelector.OnInputListener {
 
     ImageButton cabeza, torzo, bderecho, bizquierdo, pderecha, pizquierda;
     Button boton;
@@ -214,7 +217,7 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
                             leaks.LogWaveTime(3,0);
                         }
                         leaks.LogGeneralTime(generalTime);
-                        finish();
+                        AdderFragmentHelper.addPointsSelector(fragmentManager);
                 }
                 return true;
             }
@@ -241,6 +244,12 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
 
     @Override
     public void onChoose() {
+        finish();
+    }
+
+    @Override
+    public void sendSelectedPoints(int points) {
+        leaks.LogPoints(points);
         finish();
     }
 
