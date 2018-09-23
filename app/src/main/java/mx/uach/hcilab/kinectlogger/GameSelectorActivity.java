@@ -1,15 +1,23 @@
 package mx.uach.hcilab.kinectlogger;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -18,6 +26,7 @@ import mx.uach.hcilab.kinectlogger.games.LeaksActivity;
 import mx.uach.hcilab.kinectlogger.games.RallyBall;
 import mx.uach.hcilab.kinectlogger.games.ReflexRidgeActivity;
 import mx.uach.hcilab.kinectlogger.games.RiverRushActivity;
+import mx.uach.hcilab.kinectlogger.util.FirestoreHelper;
 import mx.uach.hcilab.kinectlogger.util.GameCard;
 
 public class GameSelectorActivity extends AppCompatActivity {
@@ -30,7 +39,35 @@ public class GameSelectorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_selector);
 
-        if(getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            String therapistKey = getIntent().getStringExtra(Therapist.THERAPIST_KEY);
+            String patientKey = getIntent().getStringExtra(Patient.PATIENT_KEY);
+            final String names[] = new String[2];
+            names[0] = "";
+            names[1] = "";
+            FirebaseFirestore.getInstance().collection(FirestoreHelper.THERAPIST_COLLECTION)
+                    .document(therapistKey).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    String name = documentSnapshot.getString(Therapist.NAME);
+                    names[0] = name;
+                    getSupportActionBar().setTitle("Juegos       /       Terapeuta: " + names[0]
+                            + "       /       Paciente: " + names[1]);
+                }
+            });
+
+            FirebaseFirestore.getInstance().collection(FirestoreHelper.PATIENT_COLLECTION)
+                    .document(patientKey).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    String name = documentSnapshot.getString(Patient.NAME);
+                    names[1] = name;
+                    getSupportActionBar().setTitle("Juegos       /       Terapeuta: " + names[0]
+                            + "       /       Paciente: " + names[1]);
+                }
+            });
+        }
 
         recyclerViewGames = findViewById(R.id.game_selector_recycle_view);
         recyclerViewGames.setLayoutManager(
