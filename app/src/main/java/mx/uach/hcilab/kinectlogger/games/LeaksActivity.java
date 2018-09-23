@@ -307,5 +307,9 @@ public class LeaksActivity extends AppCompatActivity implements LevelSelector.On
         leaks.LogLevel(selected_level);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        leaks.CloseLog();
+        super.onDestroy();
+    }
 }

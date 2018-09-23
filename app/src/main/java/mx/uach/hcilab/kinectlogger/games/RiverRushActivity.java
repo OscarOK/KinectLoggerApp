@@ -230,6 +230,12 @@ public class RiverRushActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onDestroy() {
+        logger.CloseLog();
+        super.onDestroy();
+    }
+
+    @Override
     public void onChoose() {
         finish();
     }

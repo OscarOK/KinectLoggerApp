@@ -286,4 +286,10 @@ public class ReflexRidgeActivity extends AppCompatActivity implements
     public void onChoose() {
         finish();
     }
+
+    @Override
+    protected void onDestroy() {
+        logger.CloseLog();
+        super.onDestroy();
+    }
 }

@@ -89,7 +89,7 @@ public class PatientActivity extends AppCompatActivity {
                 mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                mRecyclerView.smoothScrollToPosition(position);
+                //mRecyclerView.smoothScrollToPosition(position);
             }
 
             @Override

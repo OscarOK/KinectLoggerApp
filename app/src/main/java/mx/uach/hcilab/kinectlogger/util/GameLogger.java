@@ -1,7 +1,15 @@
 package mx.uach.hcilab.kinectlogger.util;
 
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +20,7 @@ public class GameLogger {
 
     public static class RiverRush {
 
-        private static final String GAME_TAG = "RiverRush";
+        private static final String GAME_TAG = "RiverRushTest";
 
         public enum State {
             GOOD, BAD, INHIBITION
@@ -22,6 +30,10 @@ public class GameLogger {
 
         private String therapistKey, patientKey;
         private long date;
+
+        private boolean open = true;
+        private boolean paired = false;
+        private String pairKey = null;
 
         private int goodJump = 0,      badJump = 0,      inhibitionJump = 0;
         private int goodMiddleBar = 0, badMiddleBar = 0, inhibitionMiddleBar = 0;
@@ -34,7 +46,29 @@ public class GameLogger {
             this.patientKey = patientKey;
             this.date = System.currentTimeMillis();
 
-            sessionReference = FirebaseFirestore.getInstance().collection(GAME_TAG).document();
+            final CollectionReference riverRushCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
+            sessionReference = riverRushCollection.document();
+
+            riverRushCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                    .whereEqualTo("patientKey", patientKey).limit(1).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                if(!list.isEmpty() && list.get(0).exists()){
+                                    DocumentReference ref = list.get(0).getReference();
+                                    paired = true;
+                                    pairKey = ref.getId();
+                                    ref.update("paired", true);
+                                    ref.update("pairKey", sessionReference.getId());
+                                    uploadLog();
+                                }
+                            }
+                        }
+                    });
+
+
         }
 
         public void LogJump (State state) {
@@ -72,11 +106,17 @@ public class GameLogger {
 
         public void LogPoints (int points) {
             this.points = points;
+            this.open = false;
             uploadLog();
         }
 
         public void LogLevel (int level) {
             this.level = level;
+            uploadLog();
+        }
+
+        public void CloseLog(){
+            this.open = false;
             uploadLog();
         }
 
@@ -99,17 +139,21 @@ public class GameLogger {
             map.put("points", points);
             map.put("cloudTimes", cloudTimes);
 
+            map.put("open", open);
+            map.put("paired", paired);
+            map.put("pairKey", pairKey);
+
             return map;
         }
 
         private void uploadLog() {
-            sessionReference.set(this.toMap());
+            if(sessionReference != null) sessionReference.set(this.toMap());
         }
     }
 
     public static class ReflexRidge {
 
-        private static final String GAME_TAG = "ReflexRidge";
+        private static final String GAME_TAG = "ReflexRidgeTest";
 
         public enum State {
             GOOD, BAD, INHIBITION
@@ -119,6 +163,10 @@ public class GameLogger {
 
         private String therapistKey, patientKey;
         private long date;
+
+        private boolean open = true;
+        private boolean paired = false;
+        private String pairKey = null;
 
         private int goodJump = 0,  badJump = 0,  inhibitionJump = 0;
         private int goodLeft = 0,  badLeft = 0,  inhibitionLeft = 0;
@@ -135,7 +183,27 @@ public class GameLogger {
             this.patientKey = patientKey;
             date = System.currentTimeMillis();
 
-            sessionReference = FirebaseFirestore.getInstance().collection(GAME_TAG).document();
+            CollectionReference reflexRidgeCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
+            sessionReference = reflexRidgeCollection.document();
+
+            reflexRidgeCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                    .whereEqualTo("patientKey", patientKey).limit(1).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                if(!list.isEmpty() && list.get(0).exists()){
+                                    DocumentReference ref = list.get(0).getReference();
+                                    paired = true;
+                                    pairKey = ref.getId();
+                                    ref.update("paired", true);
+                                    ref.update("pairKey", sessionReference.getId());
+                                    uploadLog();
+                                }
+                            }
+                        }
+                    });
         }
 
         public void LogJump (State state) {
@@ -200,6 +268,12 @@ public class GameLogger {
 
         public void LogPoints (int points) {
             this.points = points;
+            this.open = false;
+            uploadLog();
+        }
+
+        public void CloseLog () {
+            this.open = false;
             uploadLog();
         }
 
@@ -230,17 +304,21 @@ public class GameLogger {
             map.put("extraTime", extraTime);
             map.put("points", points);
 
+            map.put("open", open);
+            map.put("paired", paired);
+            map.put("pairKey", pairKey);
+
             return map;
         }
 
         private void uploadLog() {
-            sessionReference.set(this.toMap());
+            if(sessionReference != null) sessionReference.set(this.toMap());
         }
     }
 
     public static class RallyBall {
 
-        private static final String GAME_TAG = "RallyBall";
+        private static final String GAME_TAG = "RallyBallTest";
 
         public enum Parts {
             HEAD, LEFT_ARM, RIGHT_ARM, CHEST, LEFT_LEG, RIGHT_LEG
@@ -250,6 +328,10 @@ public class GameLogger {
 
         private String therapistKey, patientKey;
         private long date;
+
+        private boolean open = true;
+        private boolean paired = false;
+        private String pairKey = null;
 
         private int head = 0, leftArm = 0, rightArm = 0, chest = 0, leftLeg = 0, rightLeg = 0;
         private int inhibition = 0;
@@ -264,7 +346,27 @@ public class GameLogger {
             this.patientKey = patientKey;
             this.date = System.currentTimeMillis();
 
-            sessionReference = FirebaseFirestore.getInstance().collection(GAME_TAG).document();
+            CollectionReference rallyBallCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
+            sessionReference = rallyBallCollection.document();
+
+            rallyBallCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                    .whereEqualTo("patientKey", patientKey).limit(1).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                if(!list.isEmpty() && list.get(0).exists()){
+                                    DocumentReference ref = list.get(0).getReference();
+                                    paired = true;
+                                    pairKey = ref.getId();
+                                    ref.update("paired", true);
+                                    ref.update("pairKey", sessionReference.getId());
+                                    uploadLog();
+                                }
+                            }
+                        }
+                    });
         }
 
         public void LogInhibition(){
@@ -305,6 +407,12 @@ public class GameLogger {
 
         public void LogPoints(int points){
             this.points = points;
+            this.open = false;
+            uploadLog();
+        }
+
+        public void CloseLog () {
+            this.open = false;
             uploadLog();
         }
 
@@ -331,18 +439,22 @@ public class GameLogger {
             map.put("level", level);
             map.put("points", points);
 
+            map.put("open", open);
+            map.put("paired", paired);
+            map.put("pairKey", pairKey);
+
             return map;
         }
 
         private void uploadLog(){
-            sessionReference.set(this.toMap());
+            if(sessionReference != null ) sessionReference.set(this.toMap());
         }
 
     }
 
     public static class Leaks {
 
-        private static final String GAME_TAG = "Leaks";
+        private static final String GAME_TAG = "LeaksTest";
 
         public enum Parts {
             HEAD, LEFT_ARM, RIGHT_ARM, CHEST, LEFT_LEG, RIGHT_LEG
@@ -352,6 +464,10 @@ public class GameLogger {
 
         private String therapistKey, patientKey;
         private long date;
+
+        private boolean open = true;
+        private boolean paired = false;
+        private String pairKey = null;
 
         private int head = 0, leftArm = 0, rightArm = 0, chest = 0, leftLeg = 0, rightLeg = 0;
         private int firstWaveTime = 0, secondWaveTime = 0, thirdWaveTime = 0;
@@ -364,7 +480,27 @@ public class GameLogger {
             this.patientKey = patientKey;
             this.date = System.currentTimeMillis();
 
-            sessionReference = FirebaseFirestore.getInstance().collection(GAME_TAG).document();
+            CollectionReference leaksCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
+            sessionReference = leaksCollection.document();
+
+            leaksCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                    .whereEqualTo("patientKey", patientKey).limit(1).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                if(!list.isEmpty() && list.get(0).exists()){
+                                    DocumentReference ref = list.get(0).getReference();
+                                    paired = true;
+                                    pairKey = ref.getId();
+                                    ref.update("paired", true);
+                                    ref.update("pairKey", sessionReference.getId());
+                                    uploadLog();
+                                }
+                            }
+                        }
+                    });
         }
 
         public void LogBodyPart (Parts part) {
@@ -400,6 +536,12 @@ public class GameLogger {
 
         public void LogPoints (int points) {
             this.points = points;
+            this.open = false;
+            uploadLog();
+        }
+
+        public void CloseLog () {
+            this.open = false;
             uploadLog();
         }
 
@@ -424,11 +566,15 @@ public class GameLogger {
             map.put("level", level);
             map.put("points", points);
 
+            map.put("open", open);
+            map.put("paired", paired);
+            map.put("pairKey", pairKey);
+
             return map;
         }
 
         private void uploadLog(){
-            sessionReference.set(this.toMap());
+            if(sessionReference != null) sessionReference.set(this.toMap());
         }
 
     }
@@ -445,6 +591,7 @@ public class GameLogger {
         rallyBall.LogWaveTime(1, 35);
         rallyBall.LogWaveTime(2, 13);
         rallyBall.LogWaveTime(3, 6);
+        rallyBall.CloseLog();
 
         GameLogger.RiverRush riverRush = new GameLogger.RiverRush(therapistKey, patientKey);
         riverRush.LogRightBar();
@@ -454,14 +601,17 @@ public class GameLogger {
         riverRush.LogCloudTime(30);
         riverRush.LogCloudTime(50);
         riverRush.LogLevel(5);
+        riverRush.CloseLog();
 
         GameLogger.Leaks leaks = new GameLogger.Leaks(therapistKey, patientKey);
         leaks.LogBodyPart(GameLogger.Leaks.Parts.CHEST);
         leaks.LogWaveTime(2, 17);
+        leaks.CloseLog();
 
         GameLogger.ReflexRidge reflexRidge = new GameLogger.ReflexRidge(therapistKey, patientKey);
         reflexRidge.LogBoost(GameLogger.ReflexRidge.State.GOOD);
         reflexRidge.LogGeneralTime(50);
         reflexRidge.LogSquat(GameLogger.ReflexRidge.State.INHIBITION);
+        reflexRidge.CloseLog();
     */
 }

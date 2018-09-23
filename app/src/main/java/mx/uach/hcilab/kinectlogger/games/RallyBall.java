@@ -306,6 +306,12 @@ public class RallyBall extends AppCompatActivity implements LevelSelector.OnInpu
 
     }
 
+    @Override
+    protected void onDestroy() {
+        rally.CloseLog();
+        super.onDestroy();
+    }
+
 
 }
 
