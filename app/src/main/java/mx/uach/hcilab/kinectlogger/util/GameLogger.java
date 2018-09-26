@@ -1,6 +1,7 @@
 package mx.uach.hcilab.kinectlogger.util;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -18,6 +19,8 @@ import java.util.Map;
 
 public class GameLogger {
 
+    public static final String TAG = "GameLogger";
+
     public static class RiverRush {
 
         private static final String GAME_TAG = "RiverRushTest";
@@ -31,93 +34,99 @@ public class GameLogger {
         private String therapistKey, patientKey;
         private long date;
 
-        private boolean open = true;
-        private boolean paired = false;
-        private String pairKey = null;
-
         private int goodJump = 0,      badJump = 0,      inhibitionJump = 0;
         private int goodMiddleBar = 0, badMiddleBar = 0, inhibitionMiddleBar = 0;
         private int leftBar = 0,       rightBar = 0;
         private int level = 0,         points = 0;
         private List<Integer> cloudTimes = new ArrayList<>();
 
-        public RiverRush (String therapistKey, String patientKey) {
+        public RiverRush (final String therapistKey, final String patientKey) {
             this.therapistKey = therapistKey;
             this.patientKey = patientKey;
             this.date = System.currentTimeMillis();
 
             final CollectionReference riverRushCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
             sessionReference = riverRushCollection.document();
+            sessionReference.set(this.toMap()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    riverRushCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                            .whereEqualTo("patientKey", patientKey).limit(2).get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                        for(DocumentSnapshot doc : list) {
+                                            if(doc.getReference().getId().equals(sessionReference.getId())) continue;
 
-            riverRushCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
-                    .whereEqualTo("patientKey", patientKey).limit(1).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                List<DocumentSnapshot> list = task.getResult().getDocuments();
-                                if(!list.isEmpty() && list.get(0).exists()){
-                                    DocumentReference ref = list.get(0).getReference();
-                                    paired = true;
-                                    pairKey = ref.getId();
-                                    ref.update("paired", true);
-                                    ref.update("pairKey", sessionReference.getId());
-                                    uploadLog();
+                                            if (doc.exists()) {
+                                                DocumentReference ref = doc.getReference();
+                                                sessionReference.update("paired", true);
+                                                sessionReference.update("pairKey", ref.getId());
+                                                ref.update("paired", true);
+                                                ref.update("pairKey", sessionReference.getId());
+                                                Log.d(TAG, "paired correctly, keys: " + sessionReference.getId() + " - " + ref.getId());
+                                                break;
+                                            } else {
+                                                Log.d(TAG, "document doesn't exist");
+                                            }
+                                        }
+                                    } else {
+                                        Log.d(TAG, "task unsuccessful");
+                                    }
                                 }
-                            }
-                        }
-                    });
+                            });
+                }
+            });
 
 
         }
 
         public void LogJump (State state) {
             switch (state){
-                case GOOD: goodJump++; break;
-                case BAD: badJump++; break;
-                case INHIBITION: inhibitionJump++; break;
+                case GOOD: goodJump++; sessionReference.update("goodJumps", goodJump); break;
+                case BAD: badJump++; sessionReference.update("badJumps", badJump); break;
+                case INHIBITION: inhibitionJump++; sessionReference.update("inhibitionJumps", inhibitionJump); break;
             }
-            uploadLog();
         }
 
         public void LogMiddleBar (State state) {
             switch (state){
-                case GOOD: goodMiddleBar++; break;
-                case BAD: badMiddleBar++; break;
-                case INHIBITION: inhibitionMiddleBar++; break;
+                case GOOD: goodMiddleBar++; sessionReference.update("goodMiddleBars", goodMiddleBar); break;
+                case BAD: badMiddleBar++; sessionReference.update("badMiddleBars", badMiddleBar); break;
+                case INHIBITION: inhibitionMiddleBar++; sessionReference.update("inhibitionMiddleBars", inhibitionMiddleBar); break;
             }
-            uploadLog();
         }
 
         public void LogLeftBar () {
             leftBar++;
-            uploadLog();
+            sessionReference.update("leftBars", leftBar);
         }
 
         public void LogRightBar () {
             rightBar++;
-            uploadLog();
+            sessionReference.update("rightBars", rightBar);
         }
 
         public void LogCloudTime (int time) {
             cloudTimes.add(time);
-            uploadLog();
+            sessionReference.update("cloudTimes", cloudTimes);
         }
 
         public void LogPoints (int points) {
             this.points = points;
-            this.open = false;
-            uploadLog();
+            sessionReference.update("points", points,
+                    "open", false);
         }
 
         public void LogLevel (int level) {
             this.level = level;
-            uploadLog();
+            sessionReference.update("level", level);
         }
 
         public void CloseLog(){
-            this.open = false;
-            uploadLog();
+            sessionReference.update("open", false);
         }
 
         private Map<String, Object> toMap() {
@@ -139,16 +148,13 @@ public class GameLogger {
             map.put("points", points);
             map.put("cloudTimes", cloudTimes);
 
-            map.put("open", open);
-            map.put("paired", paired);
-            map.put("pairKey", pairKey);
+            map.put("open", true);
+            map.put("paired", false);
+            map.put("pairKey", null);
 
             return map;
         }
 
-        private void uploadLog() {
-            if(sessionReference != null) sessionReference.set(this.toMap());
-        }
     }
 
     public static class ReflexRidge {
@@ -164,9 +170,7 @@ public class GameLogger {
         private String therapistKey, patientKey;
         private long date;
 
-        private boolean open = true;
-        private boolean paired = false;
-        private String pairKey = null;
+//        private boolean open = true;
 
         private int goodJump = 0,  badJump = 0,  inhibitionJump = 0;
         private int goodLeft = 0,  badLeft = 0,  inhibitionLeft = 0;
@@ -178,103 +182,113 @@ public class GameLogger {
         private int extraTime = 0;
         private int points = 0;
 
-        public ReflexRidge (String therapistKey, String patientKey) {
+        public ReflexRidge (final String therapistKey, final String patientKey) {
             this.therapistKey = therapistKey;
             this.patientKey = patientKey;
             date = System.currentTimeMillis();
 
-            CollectionReference reflexRidgeCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
+            final CollectionReference reflexRidgeCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
             sessionReference = reflexRidgeCollection.document();
+            sessionReference.set(this.toMap()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d(TAG, "Debug 1");
+                    reflexRidgeCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                            .whereEqualTo("patientKey", patientKey).limit(2).get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                        for(DocumentSnapshot doc : list) {
+                                            if(doc.getReference().getId().equals(sessionReference.getId())) continue;
 
-            reflexRidgeCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
-                    .whereEqualTo("patientKey", patientKey).limit(1).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                List<DocumentSnapshot> list = task.getResult().getDocuments();
-                                if(!list.isEmpty() && list.get(0).exists()){
-                                    DocumentReference ref = list.get(0).getReference();
-                                    paired = true;
-                                    pairKey = ref.getId();
-                                    ref.update("paired", true);
-                                    ref.update("pairKey", sessionReference.getId());
-                                    uploadLog();
+                                            if (doc.exists()) {
+                                                DocumentReference ref = doc.getReference();
+                                                sessionReference.update("paired", true);
+                                                sessionReference.update("pairKey", ref.getId());
+                                                ref.update("paired", true);
+                                                ref.update("pairKey", sessionReference.getId());
+                                                Log.d(TAG, "paired correctly, keys: " + sessionReference.getId() + " - " + ref.getId());
+                                                break;
+                                            } else {
+                                                Log.d(TAG, "document doesn't exist");
+                                            }
+                                        }
+                                    } else {
+                                        Log.d(TAG, "task unsuccessful");
+                                    }
                                 }
-                            }
-                        }
-                    });
+                            });
+                }
+            });
+
         }
 
         public void LogJump (State state) {
             switch (state){
-                case GOOD: goodJump++; break;
-                case BAD: badJump++; break;
-                case INHIBITION: inhibitionJump++; break;
+                case GOOD: goodJump++; sessionReference.update("goodJumps", goodJump); break;
+                case BAD: badJump++; sessionReference.update("badJumps", badJump); break;
+                case INHIBITION: inhibitionJump++; sessionReference.update("inhibitionJumps", inhibitionJump); break;
             }
-            uploadLog();
         }
 
         public void LogLeft (State state) {
             switch (state){
-                case GOOD: goodLeft++; break;
-                case BAD: badLeft++; break;
-                case INHIBITION: inhibitionLeft++; break;
+                case GOOD: goodLeft++; sessionReference.update("goodLefts", goodLeft); break;
+                case BAD: badLeft++; sessionReference.update("badLefts", badLeft); break;
+                case INHIBITION: inhibitionLeft++; sessionReference.update("inhibitionLefts", inhibitionLeft); break;
             }
-            uploadLog();
         }
 
         public void LogBoost (State state) {
             switch (state){
-                case GOOD: goodBoost++; break;
-                case BAD: badBoost++; break;
-                case INHIBITION: inhibitionBoost++; break;
+                case GOOD: goodBoost++; sessionReference.update("goodBoosts", goodBoost); break;
+                case BAD: badBoost++; sessionReference.update("badBoosts", badBoost); break;
+                case INHIBITION: inhibitionBoost++; sessionReference.update("inhibitionBoosts", inhibitionBoost); break;
             }
-            uploadLog();
         }
 
         public void LogRight (State state) {
             switch (state){
-                case GOOD: goodRight++; break;
-                case BAD: badRight++; break;
-                case INHIBITION: inhibitionRight++; break;
+                case GOOD: goodRight++; sessionReference.update("goodRights", goodRight); break;
+                case BAD: badRight++; sessionReference.update("badRights", badRight); break;
+                case INHIBITION: inhibitionRight++; sessionReference.update("inhibitionRights", inhibitionRight); break;
             }
-            uploadLog();
         }
 
         public void LogSquat (State state) {
             switch (state){
-                case GOOD: goodSquat++; break;
-                case BAD: badSquat++; break;
-                case INHIBITION: inhibitionSquat++; break;
+                case GOOD: goodSquat++; sessionReference.update("goodSquats", goodSquat); break;
+                case BAD: badSquat++; sessionReference.update("badSquats", badSquat); break;
+                case INHIBITION: inhibitionSquat++; sessionReference.update("inhibitionSquats", inhibitionSquat); break;
             }
-            uploadLog();
         }
 
         public void LogLevel (int level) {
             this.level = level;
-            uploadLog();
+            sessionReference.update("level", level);
         }
 
         public void LogGeneralTime (int time) {
             this.generalTime = time;
-            uploadLog();
+            sessionReference.update("generalTime", generalTime);
         }
 
         public void LogExtraTime (int time) {
             this.extraTime = time;
-            uploadLog();
+            sessionReference.update("extraTime", extraTime);
         }
 
         public void LogPoints (int points) {
             this.points = points;
-            this.open = false;
-            uploadLog();
+            sessionReference.update(
+                    "points", points,
+                    "open", false);
         }
 
         public void CloseLog () {
-            this.open = false;
-            uploadLog();
+            sessionReference.update("open", false);
         }
 
         private Map<String, Object> toMap() {
@@ -282,7 +296,6 @@ public class GameLogger {
             map.put("therapistKey", therapistKey);
             map.put("patientKey", patientKey);
             map.put("date", date);
-
             map.put("goodJumps", goodJump);
             map.put("badJumps", badJump);
             map.put("inhibitionJumps", inhibitionJump);
@@ -298,21 +311,15 @@ public class GameLogger {
             map.put("goodSquats", goodSquat);
             map.put("badSquats", badSquat);
             map.put("inhibitionSquats", inhibitionSquat);
-
             map.put("level", level);
             map.put("generalTime", generalTime);
             map.put("extraTime", extraTime);
             map.put("points", points);
-
-            map.put("open", open);
-            map.put("paired", paired);
-            map.put("pairKey", pairKey);
+            map.put("open", true);
+            map.put("paired", false);
+            map.put("pairKey", null);
 
             return map;
-        }
-
-        private void uploadLog() {
-            if(sessionReference != null) sessionReference.set(this.toMap());
         }
     }
 
@@ -329,10 +336,6 @@ public class GameLogger {
         private String therapistKey, patientKey;
         private long date;
 
-        private boolean open = true;
-        private boolean paired = false;
-        private String pairKey = null;
-
         private int head = 0, leftArm = 0, rightArm = 0, chest = 0, leftLeg = 0, rightLeg = 0;
         private int inhibition = 0;
 
@@ -341,79 +344,87 @@ public class GameLogger {
         private int level = 0;
         private int points = 0;
 
-        public RallyBall (String therapistKey, String patientKey) {
+        public RallyBall (final String therapistKey, final String patientKey) {
             this.therapistKey = therapistKey;
             this.patientKey = patientKey;
             this.date = System.currentTimeMillis();
 
-            CollectionReference rallyBallCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
+            final CollectionReference rallyBallCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
             sessionReference = rallyBallCollection.document();
+            sessionReference.set(this.toMap()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                rallyBallCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                        .whereEqualTo("patientKey", patientKey).limit(2).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                    for(DocumentSnapshot doc : list) {
+                                        if(doc.getReference().getId().equals(sessionReference.getId())) continue;
 
-            rallyBallCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
-                    .whereEqualTo("patientKey", patientKey).limit(1).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                List<DocumentSnapshot> list = task.getResult().getDocuments();
-                                if(!list.isEmpty() && list.get(0).exists()){
-                                    DocumentReference ref = list.get(0).getReference();
-                                    paired = true;
-                                    pairKey = ref.getId();
-                                    ref.update("paired", true);
-                                    ref.update("pairKey", sessionReference.getId());
-                                    uploadLog();
+                                        if (doc.exists()) {
+                                            DocumentReference ref = doc.getReference();
+                                            sessionReference.update("paired", true);
+                                            sessionReference.update("pairKey", ref.getId());
+                                            ref.update("paired", true);
+                                            ref.update("pairKey", sessionReference.getId());
+                                            Log.d(TAG, "paired correctly, keys: " + sessionReference.getId() + " - " + ref.getId());
+                                            break;
+                                        } else {
+                                            Log.d(TAG, "document doesn't exist");
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
+                });
         }
 
         public void LogInhibition(){
             inhibition++;
-            uploadLog();
+            sessionReference.update("inhibitions", inhibition);
         }
 
         public void LogBodyPart (Parts part) {
             switch (part){
-                case HEAD:      head++;     break;
-                case LEFT_ARM:  leftArm++;  break;
-                case RIGHT_ARM: rightArm++; break;
-                case CHEST:     chest++;    break;
-                case LEFT_LEG:  leftLeg++;  break;
-                case RIGHT_LEG: rightLeg++; break;
+                case HEAD:      head++;     sessionReference.update("heads", head); break;
+                case LEFT_ARM:  leftArm++;  sessionReference.update("leftArms", leftArm); break;
+                case RIGHT_ARM: rightArm++; sessionReference.update("rightArms", rightArm); break;
+                case CHEST:     chest++;    sessionReference.update("chests", chest); break;
+                case LEFT_LEG:  leftLeg++;  sessionReference.update("leftLegs", leftLeg); break;
+                case RIGHT_LEG: rightLeg++; sessionReference.update("rightLegs", rightLeg); break;
             }
-            uploadLog();
         }
 
         public void LogWaveTime (int wave, int time) {
             switch (wave) {
-                case 1: firstWaveTime = time;  break;
-                case 2: secondWaveTime = time; break;
-                case 3: thirdWaveTime = time;  break;
+                case 1: firstWaveTime = time;  sessionReference.update("firstWaveTime", firstWaveTime); break;
+                case 2: secondWaveTime = time; sessionReference.update("secondWaveTime", secondWaveTime); break;
+                case 3: thirdWaveTime = time;  sessionReference.update("thirdWaveTime", thirdWaveTime); break;
             }
-            uploadLog();
         }
 
         public void LogGeneralTime (int time) {
-         this.generalTime = time;
-         uploadLog();
+            this.generalTime = time;
+            sessionReference.update("generalTime", generalTime);
         }
 
         public void LogLevel (int level) {
             this.level = level;
-            uploadLog();
+            sessionReference.update("level", level);
         }
 
         public void LogPoints(int points){
             this.points = points;
-            this.open = false;
-            uploadLog();
+            sessionReference.update("points", points,
+                    "open", false);
         }
 
         public void CloseLog () {
-            this.open = false;
-            uploadLog();
+            sessionReference.update("open", false);
         }
 
         private Map<String, Object> toMap() {
@@ -439,15 +450,11 @@ public class GameLogger {
             map.put("level", level);
             map.put("points", points);
 
-            map.put("open", open);
-            map.put("paired", paired);
-            map.put("pairKey", pairKey);
+            map.put("open", true);
+            map.put("paired", false);
+            map.put("pairKey", null);
 
             return map;
-        }
-
-        private void uploadLog(){
-            if(sessionReference != null ) sessionReference.set(this.toMap());
         }
 
     }
@@ -465,84 +472,88 @@ public class GameLogger {
         private String therapistKey, patientKey;
         private long date;
 
-        private boolean open = true;
-        private boolean paired = false;
-        private String pairKey = null;
-
         private int head = 0, leftArm = 0, rightArm = 0, chest = 0, leftLeg = 0, rightLeg = 0;
         private int firstWaveTime = 0, secondWaveTime = 0, thirdWaveTime = 0;
         private int generalTime = 0;
         private int level = 0;
         private int points = 0;
 
-        public Leaks (String therapistKey, String patientKey) {
+        public Leaks (final String therapistKey, final String patientKey) {
             this.therapistKey = therapistKey;
             this.patientKey = patientKey;
             this.date = System.currentTimeMillis();
 
-            CollectionReference leaksCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
+            final CollectionReference leaksCollection = FirebaseFirestore.getInstance().collection(GAME_TAG);
             sessionReference = leaksCollection.document();
+            sessionReference.set(this.toMap()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    leaksCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
+                            .whereEqualTo("patientKey", patientKey).limit(2).get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                        for(DocumentSnapshot doc : list) {
+                                            if(doc.getReference().getId().equals(sessionReference.getId())) continue;
 
-            leaksCollection.whereEqualTo("open", true).whereEqualTo("paired", false)
-                    .whereEqualTo("patientKey", patientKey).limit(1).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                List<DocumentSnapshot> list = task.getResult().getDocuments();
-                                if(!list.isEmpty() && list.get(0).exists()){
-                                    DocumentReference ref = list.get(0).getReference();
-                                    paired = true;
-                                    pairKey = ref.getId();
-                                    ref.update("paired", true);
-                                    ref.update("pairKey", sessionReference.getId());
-                                    uploadLog();
+                                            if (doc.exists()) {
+                                                DocumentReference ref = doc.getReference();
+                                                sessionReference.update("paired", true);
+                                                sessionReference.update("pairKey", ref.getId());
+                                                ref.update("paired", true);
+                                                ref.update("pairKey", sessionReference.getId());
+                                                Log.d(TAG, "paired correctly, keys: " + sessionReference.getId() + " - " + ref.getId());
+                                                break;
+                                            } else {
+                                                Log.d(TAG, "document doesn't exist");
+                                            }
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    });
+                            });
+                }
+            });
         }
 
         public void LogBodyPart (Parts part) {
             switch (part){
-                case HEAD: head++; break;
-                case LEFT_ARM: leftArm++; break;
-                case RIGHT_ARM: rightArm++; break;
-                case CHEST: chest++; break;
-                case LEFT_LEG: leftLeg++; break;
-                case RIGHT_LEG: rightLeg++; break;
+                case HEAD: head++;          sessionReference.update("heads", head); break;
+                case LEFT_ARM: leftArm++;   sessionReference.update("leftArms", leftArm); break;
+                case RIGHT_ARM: rightArm++; sessionReference.update("rightArms", rightArm); break;
+                case CHEST: chest++;        sessionReference.update("chests", chest); break;
+                case LEFT_LEG: leftLeg++;   sessionReference.update("leftLegs", leftLeg); break;
+                case RIGHT_LEG: rightLeg++; sessionReference.update("rightLegs", rightLeg); break;
             }
-            uploadLog();
         }
 
         public void LogWaveTime (int wave, int time) {
             switch (wave) {
-                case 1: firstWaveTime = time;  break;
-                case 2: secondWaveTime = time; break;
-                case 3: thirdWaveTime = time;  break;
+                case 1: firstWaveTime = time;  sessionReference.update("firstWaveTime", firstWaveTime); break;
+                case 2: secondWaveTime = time; sessionReference.update("secondWaveTime", secondWaveTime); break;
+                case 3: thirdWaveTime = time;  sessionReference.update("thirdWaveTime", thirdWaveTime); break;
             }
-            uploadLog();
         }
 
         public void LogGeneralTime (int time) {
             this.generalTime = time;
-            uploadLog();
+            sessionReference.update("generalTime", generalTime);
         }
 
         public void LogLevel (int level) {
             this.level = level;
-            uploadLog();
+            sessionReference.update("level", level);
         }
 
         public void LogPoints (int points) {
             this.points = points;
-            this.open = false;
-            uploadLog();
+            sessionReference.update("points", points,
+                    "open", false);
         }
 
         public void CloseLog () {
-            this.open = false;
-            uploadLog();
+            sessionReference.update("open", false);
         }
 
         private Map<String, Object> toMap() {
@@ -566,15 +577,11 @@ public class GameLogger {
             map.put("level", level);
             map.put("points", points);
 
-            map.put("open", open);
-            map.put("paired", paired);
-            map.put("pairKey", pairKey);
+            map.put("open", true);
+            map.put("paired", false);
+            map.put("pairKey", null);
 
             return map;
-        }
-
-        private void uploadLog(){
-            if(sessionReference != null) sessionReference.set(this.toMap());
         }
 
     }
